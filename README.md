@@ -80,8 +80,21 @@ We welcome contributions to Scaffold-ETH 2!
 
 Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
 
+## how to work
+
+- setup
+
+  ```bash
+  yarn setup --network kura
+  ```
+
+- deploy to kura
+
+  ```bash
+  yarn deploy --network kura
+  ```
+
 ### 参考文献
 
 1. [テストネット BlockExplorer](https://testnet.crossvaluescan.com/)
 2. [Hardhat CrossValueChain Docs](https://docs.crossvalue.io/testnet/how-to-deploy-to-smart-contracts-hardhat)
-
