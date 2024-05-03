@@ -48,7 +48,7 @@ contract Domains is ERC721URIStorage {
    */
   constructor(
     string memory _tld
-  ) payable ERC721("CrossValueChain Domain Name System", "CDN") {
+  ) payable ERC721("CrossValueChain Domain Name Service", "CDN") {
     // owner addressを設定する。
     owner = payable(msg.sender);
     tld = _tld;
@@ -115,7 +115,7 @@ contract Domains is ERC721URIStorage {
       abi.encodePacked(
         '{"name": "',
         _name,
-        '", "description": "A domain on the Ninja name service", "image": "data:image/svg+xml;base64,',
+        '", "description": "A domain on the CrossValueChain Domain name service", "image": "data:image/svg+xml;base64,',
         Base64.encode(bytes(finalSvg)),
         '","length":"',
         strLen,
