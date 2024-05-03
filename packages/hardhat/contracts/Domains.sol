@@ -66,13 +66,13 @@ contract Domains is ERC721URIStorage {
     require(len > 0);
     if (len == 3) {
       // 3文字のドメインの場合
-      return 0.005 * 10 ** 18; // 5 MATIC = 5 000 000 000 000 000 000 (18ケタ).
+      return 0.001 * 10 ** 18; // 0.005 MATIC = 5 000 000 000 000 000 000 (18ケタ).
     } else if (len == 4) {
       //4文字のドメインの場合
       return 0.003 * 10 ** 18; // 0.003MATIC
     } else {
       // 4文字以上
-      return 0.001 * 10 ** 18; // 0.001MATIC
+      return 0.005 * 10 ** 18; // 0.001MATIC
     }
   }
 
@@ -89,7 +89,7 @@ contract Domains is ERC721URIStorage {
     // ドメイン名のミントに必要な金額を算出する。
     uint _price = price(name);
     // 十分な残高を保有しているかどうかチェックする。
-    require(msg.value >= _price, "Not enough Matic paid");
+    require(msg.value >= _price, "Not enough XCR paid");
 
     // ネームとTLD(トップレベルドメイン)を結合する。
     string memory _name = string(abi.encodePacked(name, ".", tld));

@@ -15,7 +15,8 @@
     "format": "prettier --write ./*.ts ./deploy/**/*.ts ./scripts/**/*.ts ./test/**/*.ts",
     "test": "REPORT_GAS=true hardhat test --network hardhat",
     "verify": "hardhat etherscan-verify",
-    "hardhat-verify": "hardhat verify"
+    "hardhat-verify": "hardhat verify",
+    "task:register": "hardhat register"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.7.0",

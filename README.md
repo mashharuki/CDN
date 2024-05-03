@@ -34,6 +34,10 @@ I deployed DomainName Contract.
 
 [0xD3095061512BCEA8E823063706BB9B15F75b187b](https://testnet.crossvaluescan.com/address/0xD3095061512BCEA8E823063706BB9B15F75b187b)
 
+I registered new domain name in this transaction
+
+[0x7924487669fa5af612ffd513f3f10ff6a572b92102bb9e0e0287470410c7f207](https://testnet.crossvaluescan.com/tx/0x7924487669fa5af612ffd513f3f10ff6a572b92102bb9e0e0287470410c7f207)
+
 ### Wave2
 
 ### Wave3
@@ -65,6 +69,12 @@ I deployed DomainName Contract.
 
   ```bash
   yarn deploy --network kura
+  ```
+
+- register new domain
+
+  ```bash
+  yarn hardhat:register --name cdn --amount 0.001 --network kura
   ```
 
 - start Frontend
