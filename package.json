@@ -27,6 +27,7 @@
     "hardhat:price": "yarn workspace @se-2/hardhat task:price",
     "hardhat:withdraw": "yarn workspace @se-2/hardhat task:withdraw",
     "hardhat:setRecord": "yarn workspace @se-2/hardhat task:setRecord",
+    "hardhat:getTokenURI": "yarn workspace @se-2/hardhat task:getTokenURI",
     "test": "yarn hardhat:test",
     "format": "yarn next:format && yarn hardhat:format",
     "start": "yarn workspace @se-2/nextjs dev",

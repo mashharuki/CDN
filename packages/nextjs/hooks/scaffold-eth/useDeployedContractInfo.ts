@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { useTargetNetwork } from "./useTargetNetwork";
 import { useIsMounted } from "usehooks-ts";
 import { usePublicClient } from "wagmi";
 import { Contract, ContractCodeStatus, ContractName, contracts } from "~~/utils/scaffold-eth/contract";
+import { useTargetNetwork } from "./useTargetNetwork";
 
 /**
  * Gets the matching contract info for the provided contract name from the contracts present in deployedContracts.ts
@@ -11,7 +11,7 @@ import { Contract, ContractCodeStatus, ContractName, contracts } from "~~/utils/
 export const useDeployedContractInfo = <TContractName extends ContractName>(contractName: TContractName) => {
   const isMounted = useIsMounted();
   const { targetNetwork } = useTargetNetwork();
-  const deployedContract = contracts?.[targetNetwork.id]?.[contractName as ContractName] as Contract<TContractName>;
+  const deployedContract = contracts?.[targetNetwork.id]?.[contractName as any] as Contract<TContractName>;
   const [status, setStatus] = useState<ContractCodeStatus>(ContractCodeStatus.LOADING);
   const publicClient = usePublicClient({ chainId: targetNetwork.id });
 

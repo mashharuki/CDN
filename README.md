@@ -95,6 +95,18 @@ I registered new domain name in this transaction
   yarn hardhat:withdraw --network kura
   ```
 
+- get tokenId's tokenURI
+
+  ```bash
+  yarn hardhat:getTokenURI --tokenid 0 --network kura
+  ```
+
+- build Frontend
+
+  ```bash
+  yarn next:build
+  ```
+
 - start Frontend
 
   ```bash
