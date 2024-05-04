@@ -77,6 +77,12 @@ I registered new domain name in this transaction
   yarn hardhat:register --name cdn --amount 0.001 --network kura
   ```
 
+- check price of new domain name
+
+  ```bash
+  yarn hardhat:price --name test  --network kura
+  ```
+
 - start Frontend
 
   ```bash

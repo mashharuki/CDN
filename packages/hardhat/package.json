@@ -16,7 +16,8 @@
     "test": "REPORT_GAS=true hardhat test --network hardhat",
     "verify": "hardhat etherscan-verify",
     "hardhat-verify": "hardhat verify",
-    "task:register": "hardhat register"
+    "task:register": "hardhat register",
+    "task:price": "hardhat price"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.7.0",
