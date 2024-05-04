@@ -208,7 +208,7 @@ contract Domains is ERC721URIStorage {
   /**
    * ドメインの長さが適切かチェックするためのメソッド
    */
-  function valid(string calldata name) public pure returns (bool) {
+  function valid(string calldata name) private pure returns (bool) {
     return StringUtils.strlen(name) >= 3 && StringUtils.strlen(name) <= 10;
   }
 }

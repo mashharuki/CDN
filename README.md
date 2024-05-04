@@ -83,6 +83,18 @@ I registered new domain name in this transaction
   yarn hardhat:price --name test  --network kura
   ```
 
+- set record data
+
+  ```bash
+  yarn hardhat:setRecord --name cdn --record sample --network kura
+  ```
+
+- withdraw from domains contract
+
+  ```bash
+  yarn hardhat:withdraw --network kura
+  ```
+
 - start Frontend
 
   ```bash

@@ -17,7 +17,9 @@
     "verify": "hardhat etherscan-verify",
     "hardhat-verify": "hardhat verify",
     "task:register": "hardhat register",
-    "task:price": "hardhat price"
+    "task:price": "hardhat price",
+    "task:withdraw": "hardhat withdraw",
+    "task:setRecord": "hardhat setRecord"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.7.0",
