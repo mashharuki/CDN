@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   5555: {
     Domains: {
-      address: "0x7C7Bd8BC7cEBeb774FC2E94CA8e7f9c0a752e682",
+      address: "0x6E73AE14C43145b8f8044C707642cc6e3C053224",
       abi: [
         {
           inputs: [
@@ -698,7 +698,7 @@ const deployedContracts = {
       },
     },
     YourContract: {
-      address: "0x8DF7e6234f76e8fAC829feF83E7520635359094C",
+      address: "0xe65C3cFDc4f79e36343cA2e79f17Ce8338095F4c",
       abi: [
         {
           inputs: [
