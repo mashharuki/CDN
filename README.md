@@ -101,6 +101,12 @@ I registered new domain name in this transaction
   yarn hardhat:getTokenURI --tokenid 0 --network kura
   ```
 
+- check dmain name registered status
+
+  ```bash
+  yarn hardhat:checkRegistered --name cdn --network kura
+  ```
+
 - build Frontend
 
   ```bash

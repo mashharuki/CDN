@@ -31,6 +31,10 @@ contract Domains is ERC721URIStorage {
   // IDとドメイン名を紐づけるマmap
   mapping(uint => string) public names;
 
+  // event
+  event Register(address owner, string name);
+  event SetRecord(address owner, string name ,string record);
+
   // カスタムエラー用の変数
   error Unauthorized();
   error AlreadyRegistered();
@@ -141,6 +145,7 @@ contract Domains is ERC721URIStorage {
     // namesにも登録する。
     names[newRecordId] = name;
     _tokenIds.increment();
+    emit Register(msg.sender, name);
   }
 
   /**
@@ -161,6 +166,18 @@ contract Domains is ERC721URIStorage {
     if (msg.sender != domains[name]) revert Unauthorized();
     // 登録する。
     records[name] = record;
+    emit SetRecord(msg.sender, name , record);
+  }
+
+  /**
+   * checkRegistered メソッド
+   */
+  function checkRegistered(string memory _name) public view returns (bool) {
+    if(domains[_name] == address(0)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
