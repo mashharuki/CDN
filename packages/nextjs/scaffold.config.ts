@@ -22,7 +22,15 @@ export const crossValueChainTestnet: chains.Chain = {
   rpcUrls: {
     default: { http: ["https://rpc-kura.cross.technology"] },
   },
+  blockExplorers: {
+    default: {
+      name: "CrossValueScan",
+      url: "https://testnet.crossvaluescan.com/",
+    },
+  },
 };
+
+chains.arbitrum;
 
 const scaffoldConfig = {
   // The networks on which your DApp is live
