@@ -30,6 +30,8 @@
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.0",
+    "react-loading-indicators": "0.1.1",
+    "react-toastify": "^10.0.4",
     "use-debounce": "^8.0.4",
     "usehooks-ts": "^2.13.0",
     "viem": "^2.8.16",

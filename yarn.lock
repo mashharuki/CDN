@@ -2276,6 +2276,8 @@ __metadata:
     react-copy-to-clipboard: ^5.1.0
     react-dom: ^18.2.0
     react-hot-toast: ^2.4.0
+    react-loading-indicators: 0.1.1
+    react-toastify: ^10.0.4
     tailwindcss: ^3.4.3
     type-fest: ^4.6.0
     typescript: ^5.1.6
@@ -5326,6 +5328,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clsx@npm:^2.1.0":
+  version: 2.1.1
+  resolution: "clsx@npm:2.1.1"
+  checksum: acd3e1ab9d8a433ecb3cc2f6a05ab95fe50b4a3cfc5ba47abb6cbf3754585fcb87b84e90c822a1f256c4198e3b41c7f6c391577ffc8678ad587fc0976b24fd57
+  languageName: node
+  linkType: hard
+
 "cluster-key-slot@npm:^1.1.0":
   version: 1.1.2
   resolution: "cluster-key-slot@npm:1.1.2"
@@ -5392,6 +5401,13 @@ __metadata:
   version: 1.4.0
   resolution: "colors@npm:1.4.0"
   checksum: 98aa2c2418ad87dedf25d781be69dc5fc5908e279d9d30c34d8b702e586a0474605b3a189511482b9d5ed0d20c867515d22749537f7bc546256c6014f3ebdcec
+  languageName: node
+  linkType: hard
+
+"colortranslator@npm:^1.10.2":
+  version: 1.10.2
+  resolution: "colortranslator@npm:1.10.2"
+  checksum: 02ef2f26448bb3f8ecebc819718643b2b1a4fa4c516b457d0019e17a5aaa7c05649d13ee10f336906a964fe04233366fa900a9652864be935d140a966c2e64fa
   languageName: node
   linkType: hard
 
@@ -12057,6 +12073,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-loading-indicators@npm:0.1.1":
+  version: 0.1.1
+  resolution: "react-loading-indicators@npm:0.1.1"
+  dependencies:
+    colortranslator: ^1.10.2
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 1b05b592d8838523551117c4c17def2af73c61da9a2fc2cce22df60cb250e776436e5121f296168b71c4bc60afb48f975b5428c91239b020c8dc9ef8543ab707
+  languageName: node
+  linkType: hard
+
 "react-native-webview@npm:^11.26.0":
   version: 11.26.1
   resolution: "react-native-webview@npm:11.26.1"
@@ -12119,6 +12147,18 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 7ee8ef3aab74c7ae1d70ff34a27643d11ba1a8d62d072c767827d9ff9a520905223e567002e0bf6c772929d8ea1c781a3ba0cc4a563e92b1e3dc2eaa817ecbe8
+  languageName: node
+  linkType: hard
+
+"react-toastify@npm:^10.0.4":
+  version: 10.0.5
+  resolution: "react-toastify@npm:10.0.5"
+  dependencies:
+    clsx: ^2.1.0
+  peerDependencies:
+    react: ">=18"
+    react-dom: ">=18"
+  checksum: 982d33918c63e99464623a1b3b023ab5fe18fe341143cb0cb04287e37fd0611c560d9ef451e151ac8ade15a1cda09df09d4c442b3db582965d71aaf42d49b230
   languageName: node
   linkType: hard
 

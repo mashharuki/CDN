@@ -123,3 +123,8 @@ I registered new domain name in this transaction
 
 1. [テストネット BlockExplorer](https://testnet.crossvaluescan.com/)
 2. [Hardhat CrossValueChain Docs](https://docs.crossvalue.io/testnet/how-to-deploy-to-smart-contracts-hardhat)
+3. [GitHub - ensdomains/ens-contracts](https://github.com/ensdomains/ens-contracts/tree/staging)
+4. [ENS Dapp](https://app.ens.domains/unsupportedNetwork)
+5. [ENS Docs](https://docs.ens.domains/registry/eth)
+6. [daisyui Docs](https://daisyui.com/docs/themes)
+7. [daisyui Next.js Example](https://stackblitz.com/edit/daisyui-nextjs?file=app%2Fpage.jsx)
