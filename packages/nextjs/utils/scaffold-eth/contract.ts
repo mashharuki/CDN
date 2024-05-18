@@ -82,7 +82,7 @@ type IsContractDeclarationMissing<TYes, TNo> = typeof contractsData extends { [k
   : TYes;
 
 type ContractsDeclaration = IsContractDeclarationMissing<GenericContractsDeclaration, typeof contractsData>;
-
+// @ts-ignore
 type Contracts = ContractsDeclaration[ConfiguredChainId];
 
 export type ContractName = keyof Contracts;

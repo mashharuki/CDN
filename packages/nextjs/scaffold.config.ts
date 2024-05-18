@@ -11,7 +11,7 @@ export type ScaffoldConfig = {
 /**
  * CrossValueChain testnet config
  */
-export const crossValueChainTestnet = {
+export const crossValueChainTestnet: chains.Chain = {
   id: 5555,
   name: "CrossValueChainTestnet",
   nativeCurrency: {
