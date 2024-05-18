@@ -1,10 +1,11 @@
 "use client";
 
-import { Bars3Icon, BugAntIcon, TicketIcon } from "@heroicons/react/24/outline";
+import React, { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useCallback, useRef, useState } from "react";
+import { Bars3Icon, BugAntIcon, TicketIcon } from "@heroicons/react/24/outline";
+import { MapIcon } from "@heroicons/react/24/solid";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 
@@ -28,6 +29,11 @@ export const menuLinks: HeaderMenuLink[] = [
     label: "Domain Name Service",
     href: "/cdn",
     icon: <TicketIcon className="h-4 w-4" />,
+  },
+  {
+    label: "Domains",
+    href: "/domains",
+    icon: <MapIcon className="h-4 w-4" />,
   },
 ];
 
