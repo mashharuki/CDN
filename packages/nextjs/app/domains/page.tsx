@@ -19,12 +19,16 @@ const Domains: NextPage = () => {
 
   return (
     <>
-      <div className="flex items-center flex-col flex-grow pt-10">
+      <div className="flex flex-col flex-grow pt-10">
         <div className="px-5">
           <h1 className="text-center">
             <span className="block text-4xl font-bold">Minted Domains</span>
           </h1>
-          {deployedContractData != undefined && <DomainCards deployedContractData={deployedContractData} />}
+          {deployedContractData != undefined && (
+            <div className="w-full justify-center">
+              <DomainCards deployedContractData={deployedContractData} />
+            </div>
+          )}
         </div>
       </div>
       <Toaster />

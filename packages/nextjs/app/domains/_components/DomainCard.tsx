@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useReadContract } from "wagmi";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
-import { getBlockExplorerAddressLink } from "~~/utils/scaffold-eth";
+import { getBlockExplorerAddressLink, getBlockExplorerTokenLink } from "~~/utils/scaffold-eth";
 
 type DomainCardPorps = {
   id: number;
@@ -46,6 +46,18 @@ export const DomainCard = (porps: DomainCardPorps) => {
     },
   });
 
+  const { data: tokenUri, refetch: getTokenUri } = useReadContract({
+    address: porps.deployedContractData.address,
+    functionName: "tokenURI",
+    abi: porps.deployedContractData.abi,
+    args: [porps.id],
+    chainId: targetNetwork.id,
+    query: {
+      enabled: false,
+      retry: false,
+    },
+  });
+
   /**
    * format address
    */
@@ -60,8 +72,10 @@ export const DomainCard = (porps: DomainCardPorps) => {
     const init = async () => {
       await getRecord();
       await getOwner();
+      await getTokenUri();
       console.log("owner:", owner);
       console.log("record:", record);
+      console.log("tokenUri:", tokenUri);
     };
     init();
   }, []);
@@ -69,16 +83,23 @@ export const DomainCard = (porps: DomainCardPorps) => {
   return (
     <>
       {record != undefined && owner != undefined && (
-        <div className="card w-96 bg-primary text-primary-content m-2">
+        <div className="card w-96 text-primary-content m-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white p-5 rounded-lg shadow-lg transition-transform transform hover:scale-105">
           <div className="card-body">
-            <h2 className="card-title">{porps.name}</h2>
-            <h5 className="">ID: {porps.id}</h5>
-            <p>
+            <h2 className="card-title">{porps.name}.xcr</h2>
+            <h5 className="underline">
+              <a
+                target="_blank"
+                href={getBlockExplorerTokenLink(targetNetwork, porps.deployedContractData.address, porps.id)}
+              >
+                ID: {porps.id}
+              </a>
+            </h5>
+            <p className="underline">
               <a target="_blank" href={getBlockExplorerAddressLink(targetNetwork, owner as any)}>
                 owner: {formatDisplayAddress(owner as any)}
               </a>
             </p>
-            <p>
+            <p className="underline">
               <a target="_blank" href={record as any}>
                 record: {record as any}
               </a>

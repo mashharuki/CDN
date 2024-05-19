@@ -26,7 +26,7 @@ export const menuLinks: HeaderMenuLink[] = [
     icon: <BugAntIcon className="h-4 w-4" />,
   },
   {
-    label: "Domain Name Service",
+    label: "Register Domain",
     href: "/cdn",
     icon: <TicketIcon className="h-4 w-4" />,
   },
