@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { DomainCard } from "./DomainCard";
 import "react-toastify/dist/ReactToastify.css";
-import { useAccount, useReadContract } from "wagmi";
+import { useReadContract } from "wagmi";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 
 type ContractUIProps = {

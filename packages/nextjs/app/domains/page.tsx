@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { DomainCards } from "./_components/DomainCards";
 import type { NextPage } from "next";
-import { useAccount } from "wagmi";
 import Toaster from "~~/components/Toaster";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { ContractName } from "~~/utils/scaffold-eth/contract";
