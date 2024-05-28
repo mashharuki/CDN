@@ -30,10 +30,6 @@ export const ServiceCard = ({ deployedContractData }: ContractUIProps) => {
     abi: deployedContractData.abi,
     args: [domain as any],
     chainId: targetNetwork.id,
-    query: {
-      enabled: false,
-      retry: false,
-    },
   });
 
   const { data: domainPrice, refetch: getPrice } = useReadContract({
@@ -43,8 +39,8 @@ export const ServiceCard = ({ deployedContractData }: ContractUIProps) => {
     args: [domain as any],
     chainId: targetNetwork.id,
     query: {
-      enabled: false,
-      retry: false,
+      enabled: true,
+      retry: true,
     },
   });
 
@@ -58,7 +54,7 @@ export const ServiceCard = ({ deployedContractData }: ContractUIProps) => {
     console.log("price:", domainPrice);
     setPrice(domainPrice as any);
     if (data) {
-      toast.info(`This domain isn't available`, {
+      toast.info(`This domain is available`, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,

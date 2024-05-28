@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
-import { useReadContract } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
+import { PencilIcon } from "@heroicons/react/24/outline";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 import { getBlockExplorerAddressLink, getBlockExplorerTokenLink } from "~~/utils/scaffold-eth";
 
@@ -10,6 +11,7 @@ type DomainCardPorps = {
   id: number;
   name: string;
   deployedContractData?: any;
+  filter: string;
 };
 
 /**
@@ -18,6 +20,7 @@ type DomainCardPorps = {
  */
 export const DomainCard = (porps: DomainCardPorps) => {
   const { targetNetwork } = useTargetNetwork();
+  const { address } = useAccount();
 
   console.log("name:", porps.name);
 
@@ -80,33 +83,71 @@ export const DomainCard = (porps: DomainCardPorps) => {
     init();
   }, []);
 
-  return (
-    <>
-      {record != undefined && owner != undefined && (
-        <div className="card w-96 text-primary-content m-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white p-5 rounded-lg shadow-lg transition-transform transform hover:scale-105">
-          <div className="card-body">
-            <h2 className="card-title">{porps.name}.xcr</h2>
-            <h5 className="underline">
-              <a
-                target="_blank"
-                href={getBlockExplorerTokenLink(targetNetwork, porps.deployedContractData.address, porps.id)}
-              >
-                ID: {porps.id}
-              </a>
-            </h5>
-            <p className="underline">
-              <a target="_blank" href={getBlockExplorerAddressLink(targetNetwork, owner as any)}>
-                owner: {formatDisplayAddress(owner as any)}
-              </a>
-            </p>
-            <p className="underline">
-              <a target="_blank" href={record as any}>
-                record: {record as any}
-              </a>
-            </p>
+  if (porps.filter == "myDomains") {
+    return (
+      <>
+        {record != undefined && owner != undefined && owner == address && (
+          <div className="card w-96 text-primary-content m-2 bg-gradient-to-r from-blue-500 via-orange-500 to-pink-500 text-white p-5 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+            <div className="card-body">
+              <h2 className="card-title">{porps.name}.xcr</h2>
+              <h5 className="underline">
+                <a
+                  target="_blank"
+                  href={getBlockExplorerTokenLink(targetNetwork, porps.deployedContractData.address, porps.id)}
+                >
+                  ID: {porps.id}
+                </a>
+              </h5>
+              <p className="underline">
+                <a target="_blank" href={getBlockExplorerAddressLink(targetNetwork, owner as any)}>
+                  owner: {formatDisplayAddress(owner as any)}
+                </a>
+              </p>
+              <p className="underline">
+                <a target="_blank" href={record as any}>
+                  record: {record as any}
+                </a>
+              </p>
+            </div>
+            <button className="absolute bottom-4 right-4 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors">
+              <PencilIcon className="h-5 w-5" />
+            </button>
           </div>
-        </div>
-      )}
-    </>
-  );
+        )}
+      </>
+    );
+  } else {
+    return (
+      <>
+        {record != undefined && owner != undefined && (
+          <div className="card w-96 text-primary-content m-2 bg-gradient-to-r from-blue-500 via-orange-500 to-pink-500 text-white p-5 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+            <div className="card-body">
+              <h2 className="card-title">{porps.name}.xcr</h2>
+              <h5 className="underline">
+                <a
+                  target="_blank"
+                  href={getBlockExplorerTokenLink(targetNetwork, porps.deployedContractData.address, porps.id)}
+                >
+                  ID: {porps.id}
+                </a>
+              </h5>
+              <p className="underline">
+                <a target="_blank" href={getBlockExplorerAddressLink(targetNetwork, owner as any)}>
+                  owner: {formatDisplayAddress(owner as any)}
+                </a>
+              </p>
+              <p className="underline">
+                <a target="_blank" href={record as any}>
+                  record: {record as any}
+                </a>
+              </p>
+            </div>
+            <button className="absolute bottom-4 right-4 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors">
+              <PencilIcon className="h-5 w-5" />
+            </button>
+          </div>
+        )}
+      </>
+    );
+  }
 };
