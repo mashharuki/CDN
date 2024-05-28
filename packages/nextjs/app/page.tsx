@@ -1,6 +1,6 @@
 "use client";
 
-import { ServiceCard } from "./_components/ServiceCard";
+import { ServiceCard } from "./cdn/_components/ServiceCard";
 import type { NextPage } from "next";
 import Toaster from "~~/components/Toaster";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
@@ -11,7 +11,7 @@ import { getAllContracts } from "~~/utils/scaffold-eth/contractsData";
  * Domain Name Service Page
  * @returns
  */
-const Cdn: NextPage = () => {
+const Home: NextPage = () => {
   const contractsData = getAllContracts();
   const contractNames = Object.keys(contractsData) as ContractName[];
 
@@ -34,4 +34,4 @@ const Cdn: NextPage = () => {
   );
 };
 
-export default Cdn;
+export default Home;
