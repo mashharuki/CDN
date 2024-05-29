@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useAccount, useReadContract } from "wagmi";
 import { PencilIcon } from "@heroicons/react/24/outline";
+import Modal from "~~/components/Modal";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 import { getBlockExplorerAddressLink, getBlockExplorerTokenLink } from "~~/utils/scaffold-eth";
 
@@ -19,6 +20,8 @@ type DomainCardPorps = {
  * @returns
  */
 export const DomainCard = (porps: DomainCardPorps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const { targetNetwork } = useTargetNetwork();
   const { address } = useAccount();
 
@@ -86,6 +89,13 @@ export const DomainCard = (porps: DomainCardPorps) => {
   if (porps.filter == "myDomains") {
     return (
       <>
+        <Modal
+          open={isOpen}
+          onCancel={() => setIsOpen(false)}
+          onOk={() => setIsOpen(false)}
+          deployedContractData={porps.deployedContractData}
+          domain={porps.name}
+        />
         {record != undefined && owner != undefined && owner == address && (
           <div className="card w-96 text-primary-content m-2 bg-gradient-to-r from-blue-500 via-orange-500 to-pink-500 text-white p-5 rounded-lg shadow-lg transition-transform transform hover:scale-105">
             <div className="card-body">
@@ -109,7 +119,10 @@ export const DomainCard = (porps: DomainCardPorps) => {
                 </a>
               </p>
             </div>
-            <button className="absolute bottom-4 right-4 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors">
+            <button
+              onClick={() => setIsOpen(true)}
+              className="absolute bottom-4 right-4 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors"
+            >
               <PencilIcon className="h-5 w-5" />
             </button>
           </div>
@@ -119,32 +132,52 @@ export const DomainCard = (porps: DomainCardPorps) => {
   } else {
     return (
       <>
+        <Modal
+          open={isOpen}
+          onCancel={() => setIsOpen(false)}
+          onOk={() => setIsOpen(false)}
+          deployedContractData={porps.deployedContractData}
+          domain={porps.name}
+        />
         {record != undefined && owner != undefined && (
           <div className="card w-96 text-primary-content m-2 bg-gradient-to-r from-blue-500 via-orange-500 to-pink-500 text-white p-5 rounded-lg shadow-lg transition-transform transform hover:scale-105">
             <div className="card-body">
               <h2 className="card-title">{porps.name}.xcr</h2>
-              <h5 className="underline">
+              <h5>
+                ID:{" "}
                 <a
+                  className="underline"
                   target="_blank"
                   href={getBlockExplorerTokenLink(targetNetwork, porps.deployedContractData.address, porps.id)}
                 >
-                  ID: {porps.id}
+                  {porps.id}
                 </a>
               </h5>
-              <p className="underline">
-                <a target="_blank" href={getBlockExplorerAddressLink(targetNetwork, owner as any)}>
-                  owner: {formatDisplayAddress(owner as any)}
+              <p>
+                owner:{" "}
+                <a
+                  className="underline"
+                  target="_blank"
+                  href={getBlockExplorerAddressLink(targetNetwork, owner as any)}
+                >
+                  0x{formatDisplayAddress(owner as any)}
                 </a>
               </p>
-              <p className="underline">
-                <a target="_blank" href={record as any}>
-                  record: {record as any}
+              <p>
+                record:{" "}
+                <a className="underline" target="_blank" href={record as any}>
+                  {record as any}
                 </a>
               </p>
             </div>
-            <button className="absolute bottom-4 right-4 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors">
-              <PencilIcon className="h-5 w-5" />
-            </button>
+            {owner == address && (
+              <button
+                onClick={() => setIsOpen(true)}
+                className="absolute bottom-4 right-4 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors"
+              >
+                <PencilIcon className="h-5 w-5" />
+              </button>
+            )}
           </div>
         )}
       </>
