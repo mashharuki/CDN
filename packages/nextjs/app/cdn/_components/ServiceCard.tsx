@@ -91,16 +91,17 @@ export const ServiceCard = ({ deployedContractData }: ContractUIProps) => {
         args: [domain as any],
         chainId: targetNetwork.id,
         value: BigInt(Number(price)),
-      });
-      toast.success("🦄 Success!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
+      }).then(() => {
+        toast.success("🦄 Success!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       });
     } catch (err: any) {
       console.error("err:", err);
