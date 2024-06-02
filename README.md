@@ -40,7 +40,15 @@ I registered new domain name in this transaction
 
 ### Wave2
 
+Update fronted
+
 ### Wave3
+
+There are 3 update points.  
+
+- I Changed the contents of the Home Page to allow users to check and register domains from the Home Page.  
+- I Added filter function to the All Domains screen. You can now search only for domains that you own.  
+- I Added ability to update records on the All Domains screen. Allows you to set any record for any domain you own.
 
 ### Wave4
 
