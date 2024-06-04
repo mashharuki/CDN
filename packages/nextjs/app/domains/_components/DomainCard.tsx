@@ -96,36 +96,52 @@ export const DomainCard = (porps: DomainCardPorps) => {
           deployedContractData={porps.deployedContractData}
           domain={porps.name}
         />
-        {record != undefined && owner != undefined && owner == address && (
-          <div className="card w-96 text-primary-content m-2 bg-gradient-to-r from-blue-500 via-orange-500 to-pink-500 text-white p-5 rounded-lg shadow-lg transition-transform transform hover:scale-105">
-            <div className="card-body">
-              <h2 className="card-title">{porps.name}.xcr</h2>
-              <h5 className="underline">
-                <a
-                  target="_blank"
-                  href={getBlockExplorerTokenLink(targetNetwork, porps.deployedContractData.address, porps.id)}
-                >
-                  ID: {porps.id}
-                </a>
-              </h5>
-              <p className="underline">
-                <a target="_blank" href={getBlockExplorerAddressLink(targetNetwork, owner as any)}>
-                  owner: {formatDisplayAddress(owner as any)}
-                </a>
-              </p>
-              <p className="underline">
-                <a target="_blank" href={record as any}>
-                  record: {record as any}
-                </a>
-              </p>
-            </div>
-            <button
-              onClick={() => setIsOpen(true)}
-              className="absolute bottom-4 right-4 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors"
-            >
-              <PencilIcon className="h-5 w-5" />
-            </button>
-          </div>
+        {record != undefined && owner != undefined && (
+          <>
+            {owner == address ? (
+              <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+                <div className="card w-96 text-primary-content m-2 bg-gradient-to-r from-blue-500 via-orange-500 to-pink-500 text-white p-5 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+                  <div className="card-body">
+                    <h2 className="card-title">{porps.name}.xcr</h2>
+                    <h5>
+                      <a
+                        className="underline"
+                        target="_blank"
+                        href={getBlockExplorerTokenLink(targetNetwork, porps.deployedContractData.address, porps.id)}
+                      >
+                        ID: {porps.id}
+                      </a>
+                    </h5>
+                    <p>
+                      <a
+                        className="underline"
+                        target="_blank"
+                        href={getBlockExplorerAddressLink(targetNetwork, owner as any)}
+                      >
+                        owner: {formatDisplayAddress(owner as any)}
+                      </a>
+                    </p>
+                    <p>
+                      <a className="underline" target="_blank" href={record as any}>
+                        record: {record as any}
+                      </a>
+                    </p>
+                  </div>
+                  <button className="absolute bottom-4 right-12 bg-white text-blue-500 rounded-full p-2 mr-1 shadow-lg hover:bg-gray-200 transition-colors">
+                    Mint CDH
+                  </button>
+                  <button
+                    onClick={() => setIsOpen(true)}
+                    className="absolute bottom-4 right-3 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors"
+                  >
+                    <PencilIcon className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
+          </>
         )}
       </>
     );
@@ -171,12 +187,17 @@ export const DomainCard = (porps: DomainCardPorps) => {
               </p>
             </div>
             {owner == address && (
-              <button
-                onClick={() => setIsOpen(true)}
-                className="absolute bottom-4 right-4 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors"
-              >
-                <PencilIcon className="h-5 w-5" />
-              </button>
+              <>
+                <button className="absolute bottom-4 right-12 bg-white text-blue-500 rounded-full p-2 mr-1 shadow-lg hover:bg-gray-200 transition-colors">
+                  Mint CDH
+                </button>
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="absolute bottom-4 right-3 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors"
+                >
+                  <PencilIcon className="h-5 w-5" />
+                </button>
+              </>
             )}
           </div>
         )}

@@ -70,7 +70,7 @@ const Modal = (props: ModalProps) => {
           name="record"
           id="record"
           onChange={(e: any) => setNewRecord(e.target.value)}
-          className="block w-full rounded-lg border border-gray-300 py-2 px-4 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 mb-4"
+          className="block w-full rounded-lg border bg-gray-600 border-gray-300 py-2 px-4 text-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 mb-4"
         />
         <button
           className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-6 py-2 transition duration-300 ease-in-out"

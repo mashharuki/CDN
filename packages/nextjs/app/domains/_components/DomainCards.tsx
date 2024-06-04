@@ -35,10 +35,10 @@ export const DomainCards = ({ deployedContractData, filter }: ContractUIProps) =
    */
   const displayCards = (names: any) => {
     return (
-      <div className="flex flex-wrap -m-2">
+      <div className="flex flex-wrap m-auto">
         {names.map((name: any, index: number) => {
           return (
-            <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2" key={index}>
+            <div className="" key={index}>
               <DomainCard id={index} name={name} deployedContractData={deployedContractData} filter={filter} />
             </div>
           );
