@@ -136,3 +136,4 @@ There are 3 update points.
 5. [ENS Docs](https://docs.ens.domains/registry/eth)
 6. [daisyui Docs](https://daisyui.com/docs/themes)
 7. [daisyui Next.js Example](https://stackblitz.com/edit/daisyui-nextjs?file=app%2Fpage.jsx)
+8. [GitHub - Central-Data-Hub](https://github.com/cardene777/Central-Data-Hub)
