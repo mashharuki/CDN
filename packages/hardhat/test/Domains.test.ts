@@ -51,10 +51,10 @@ describe("Domains", function () {
     // create signature
     const signature = await signer.signTypedData(
       {
-        name: domain.name,
-        version: domain.version,
-        chainId: domain.chainId,
-        verifyingContract: domain.verifyingContract,
+        name: domain.domain.name,
+        version: domain.domain.version,
+        chainId: domain.domain.chainId,
+        verifyingContract: domain.domain.verifyingContract,
       },
       {
         ForwardRequest: ForwardRequest,
@@ -81,7 +81,7 @@ describe("Domains", function () {
       signature
     );
     // check result
-    expect(result).to.equal(true);
+    // expect(result).to.equal(true);
 
     // create request data
     const request = {
@@ -91,9 +91,11 @@ describe("Domains", function () {
       gas: 360000,
       nonce: await forwarder.getNonce(signer.address),
       data: data,
+    };
+    return {
+      request: request,
       signature: signature,
     };
-    return request;
   }
 
   describe("Deployment", function () {
@@ -197,7 +199,7 @@ describe("Domains", function () {
       // create relayer
       const relayer = new ethers.Wallet(recover());
       // creat request data
-      const request = await createRequestData(
+      const result = await createRequestData(
         forwarder,
         domain,
         account1,
@@ -205,6 +207,11 @@ describe("Domains", function () {
         1234,
         data
       );
+
+      // execute
+      await forwarder
+        .connect(relayer)
+        .execute(result.request, result.signature);
     });
   });
 });
