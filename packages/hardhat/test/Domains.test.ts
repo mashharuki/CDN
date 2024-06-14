@@ -1,26 +1,100 @@
-import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
-import { expect } from "chai";
-import { ethers } from "hardhat";
-import { Domains } from "../typechain-types";
+import {HardhatEthersSigner} from "@nomicfoundation/hardhat-ethers/signers";
+import {expect} from "chai";
+import {ethers} from "hardhat";
+import {recover} from "../lib/sss";
+import {ForwardRequest} from "../lib/types";
+import {
+  Domains,
+  SampleForwarder,
+  SampleForwarder__factory,
+} from "../typechain-types";
 
 describe("Domains", function () {
   // We define a fixture to reuse the same setup in every test.
 
   let domains: Domains;
+  let forwarder: SampleForwarder;
   let account1: HardhatEthersSigner;
   let account2: HardhatEthersSigner;
-  const deployerAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  let deployerAddress: string;
 
   before(async () => {
     const accounts = await ethers.getSigners();
     account1 = accounts[0];
     account2 = accounts[1];
     console.log(accounts);
+
+    deployerAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+
+    // deploy Forwarder Contract
+    const SampleForwarder: SampleForwarder__factory =
+      await ethers.getContractFactory("SampleForwarder");
+    forwarder = await SampleForwarder.deploy();
+    await forwarder.waitForDeployment();
     // deploy contract
     const Domains = await ethers.getContractFactory("Domains");
-    domains = (await Domains.deploy("xcr")) as Domains;
+    domains = (await Domains.deploy("xcr", forwarder.target)) as Domains;
     await domains.waitForDeployment();
   });
+
+  /**
+   * create Request data
+   */
+  async function createRequestData(
+    forwarder: SampleForwarder,
+    domain: any,
+    signer: any,
+    to: string,
+    value: number,
+    data: any
+  ) {
+    // create signature
+    const signature = await signer.signTypedData(
+      {
+        name: domain.name,
+        version: domain.version,
+        chainId: domain.chainId,
+        verifyingContract: domain.verifyingContract,
+      },
+      {
+        ForwardRequest: ForwardRequest,
+      },
+      {
+        from: signer.address,
+        to: to,
+        value: ethers.parseEther(value.toString()),
+        gas: 360000,
+        nonce: await forwarder.getNonce(signer.address),
+        data: data,
+      }
+    );
+    // verify signature
+    const result = await forwarder.verify(
+      {
+        from: signer.address,
+        to: to,
+        value: ethers.parseEther(value.toString()),
+        gas: 360000,
+        nonce: await forwarder.getNonce(signer.address),
+        data: data,
+      },
+      signature
+    );
+    // check result
+    expect(result).to.equal(true);
+
+    // create request data
+    const request = {
+      from: signer.address,
+      to: to,
+      value: ethers.parseEther(value.toString()),
+      gas: 360000,
+      nonce: await forwarder.getNonce(signer.address),
+      data: data,
+      signature: signature,
+    };
+    return request;
+  }
 
   describe("Deployment", function () {
     it("Should have the right balance on deploy", async function () {
@@ -37,7 +111,7 @@ describe("Domains", function () {
 
   describe("Register", function () {
     it("Check Register function", async function () {
-      const txn = await domains.register("haruki", {
+      const txn = await domains.connect(account1).register("haruki", {
         value: ethers.parseEther("1234"),
       });
       await txn.wait();
@@ -92,6 +166,45 @@ describe("Domains", function () {
       const allNames = await domains.getAllNames();
       expect(allNames.length).to.equal(4);
       expect(allNames[0]).to.equal("haruki");
+    });
+  });
+
+  describe("Gasless Register", function () {
+    it("check forwarder address", async function () {
+      expect(true).to.equal(await domains.isTrustedForwarder(forwarder.target));
+    });
+
+    it("gasless register", async function () {
+      // create encode function data
+      const data = domains.interface.encodeFunctionData("register", [
+        "haruki5",
+      ]);
+
+      // get domain
+      const domain = {
+        types: {
+          ForwardRequest,
+        },
+        domain: {
+          name: "MinimalForwarder",
+          version: "0.0.1",
+          chainId: 31337,
+          verifyingContract: domains.target,
+        },
+        primaryType: "ForwardRequest",
+      };
+
+      // create relayer
+      const relayer = new ethers.Wallet(recover());
+      // creat request data
+      const request = await createRequestData(
+        forwarder,
+        domain,
+        account1,
+        domains.target as string,
+        1234,
+        data
+      );
     });
   });
 });

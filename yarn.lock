@@ -1901,10 +1901,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts@npm:^4.8.1":
-  version: 4.9.3
-  resolution: "@openzeppelin/contracts@npm:4.9.3"
-  checksum: 4932063e733b35fa7669b9fe2053f69b062366c5c208b0c6cfa1ac451712100c78acff98120c3a4b88d94154c802be05d160d71f37e7d74cadbe150964458838
+"@openzeppelin/contracts@npm:4.8.1":
+  version: 4.8.1
+  resolution: "@openzeppelin/contracts@npm:4.8.1"
+  checksum: 99acefde1ae42c2d935ec9b4ebd327e786c499a4ec76b9582eb9adb0ff94a77c48047332fba44fb97b82b5a46d80e74d3e5d8cf73d5defa7f746f2a67f070281
   languageName: node
   linkType: hard
 
@@ -2212,7 +2212,7 @@ __metadata:
     "@nomicfoundation/hardhat-ethers": ^3.0.5
     "@nomicfoundation/hardhat-network-helpers": ^1.0.6
     "@nomicfoundation/hardhat-verify": ^2.0.3
-    "@openzeppelin/contracts": ^4.8.1
+    "@openzeppelin/contracts": 4.8.1
     "@typechain/ethers-v5": ^10.1.0
     "@typechain/ethers-v6": ^0.5.1
     "@typechain/hardhat": ^9.1.0
@@ -2235,6 +2235,7 @@ __metadata:
     hardhat-gas-reporter: ^1.0.9
     prettier: ^2.8.4
     qrcode: ^1.5.1
+    shamirs-secret-sharing: 1.0.1
     solidity-coverage: ^0.8.5
     ts-node: ^10.9.1
     typechain: ^8.1.0
@@ -12920,6 +12921,13 @@ __metadata:
     charenc: ">= 0.0.1"
     crypt: ">= 0.0.1"
   checksum: da9f47e949988e2f595ef19733fd1dc736866ef6de4e421a55c13b444c03ae532e528b7350ae6ea55d9fb053be61d4648ec2cd5250d46cfdbdf4f6b4e763713d
+  languageName: node
+  linkType: hard
+
+"shamirs-secret-sharing@npm:1.0.1":
+  version: 1.0.1
+  resolution: "shamirs-secret-sharing@npm:1.0.1"
+  checksum: 6b231aed536b475a8650d024b2edf2e967d63e6d31405f304b4a46b60e83c1a00fd924ca1428386faf91591c0bbb4d0cb51df5ec91f9e92b17b88d36e5ed68fb
   languageName: node
   linkType: hard
 

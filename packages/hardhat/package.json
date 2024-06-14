@@ -21,7 +21,9 @@
     "task:withdraw": "hardhat withdraw",
     "task:setRecord": "hardhat setRecord",
     "task:getTokenURI": "hardhat getTokenURI",
-    "task:checkRegistered": "hardhat checkRegistered"
+    "task:checkRegistered": "hardhat checkRegistered",
+    "task:createShares": "hardhat createShares",
+    "task:recoverSecret": "hardhat recoverSecret"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.7.0",
@@ -54,10 +56,11 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.8.1",
+    "@openzeppelin/contracts": "4.8.1",
     "@typechain/ethers-v6": "^0.5.1",
     "dotenv": "^16.0.3",
     "envfile": "^6.18.0",
-    "qrcode": "^1.5.1"
+    "qrcode": "^1.5.1",
+    "shamirs-secret-sharing": "1.0.1"
   }
 }
