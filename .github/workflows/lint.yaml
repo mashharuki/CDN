@@ -33,7 +33,7 @@ jobs:
       - name: Test Smart Contracts
         run: yarn hardhat:test
         env:
-          DEPLOYER_PRIVATE_KEY: secrets.DEPLOYER_PRIVATE_KEY
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
 
       - name: Build Frontend
         run: yarn build
