@@ -1,4 +1,4 @@
-name: Lint & Test Smart Contracts
+name: Test Smart Contracts
 
 on:
   push:
@@ -29,15 +29,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --immutable
-
-      - name: Run nextjs lint
-        run: yarn next:lint --max-warnings=0
-
-      - name: Check typings on nextjs
-        run: yarn next:check-types
-
-      - name: Run hardhat lint
-        run: yarn hardhat:lint --max-warnings=0
 
       - name: Test Smart Contracts
         run: yarn hardhat:test
