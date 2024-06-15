@@ -31,9 +31,9 @@ jobs:
         run: yarn install --immutable
 
       - name: Test Smart Contracts
-        run: yarn hardhat:test
         env:
           DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+        run: yarn hardhat:test
 
       - name: Build Frontend
         run: yarn build
