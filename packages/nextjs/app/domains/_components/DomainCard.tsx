@@ -12,6 +12,7 @@ import { getBlockExplorerAddressLink, getBlockExplorerTokenLink } from "~~/utils
 type DomainCardPorps = {
   id: number;
   name: string;
+  cdhContractData?: any;
   deployedContractData?: any;
   filter: string;
 };
@@ -65,6 +66,18 @@ export const DomainCard = (porps: DomainCardPorps) => {
       retry: false,
     },
   });
+  // get CDH's balance
+  const { data: balance, refetch: getBalance } = useReadContract({
+    address: porps.cdhContractData.address,
+    functionName: "balanceOf",
+    abi: porps.cdhContractData.abi,
+    args: [address as string],
+    chainId: targetNetwork.id,
+    query: {
+      enabled: false,
+      retry: true,
+    },
+  });
 
   /**
    * format address
@@ -81,9 +94,11 @@ export const DomainCard = (porps: DomainCardPorps) => {
       await getRecord();
       await getOwner();
       await getTokenUri();
+      await getBalance();
       console.log("owner:", owner);
       console.log("record:", record);
       console.log("tokenUri:", tokenUri);
+      console.log("balance:", balance);
     };
     init();
   }, []);
@@ -136,12 +151,28 @@ export const DomainCard = (porps: DomainCardPorps) => {
                       </a>
                     </p>
                   </div>
-                  <button
-                    onClick={() => setIsMintCDHOpen(true)}
-                    className="absolute bottom-4 right-12 bg-white text-blue-500 rounded-full p-2 mr-1 shadow-lg hover:bg-gray-200 transition-colors"
-                  >
-                    Mint CDH
-                  </button>
+                  {balance != undefined && (
+                    <>
+                      {balance != 0 ? (
+                        <p>
+                          <a
+                            className="underline"
+                            target="_blank"
+                            href={getBlockExplorerAddressLink(targetNetwork, porps.cdhContractData.address as any)}
+                          >
+                            Check Your CDH
+                          </a>
+                        </p>
+                      ) : (
+                        <button
+                          onClick={() => setIsMintCDHOpen(true)}
+                          className="absolute bottom-4 right-12 bg-white text-blue-500 rounded-full p-2 mr-1 shadow-lg hover:bg-gray-200 transition-colors"
+                        >
+                          Mint CDH
+                        </button>
+                      )}
+                    </>
+                  )}
                   <button
                     onClick={() => setIsOpen(true)}
                     className="absolute bottom-4 right-3 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors"
@@ -207,12 +238,28 @@ export const DomainCard = (porps: DomainCardPorps) => {
             </div>
             {owner == address && (
               <>
-                <button
-                  onClick={() => setIsMintCDHOpen(true)}
-                  className="absolute bottom-4 right-12 bg-white text-blue-500 rounded-full p-2 mr-1 shadow-lg hover:bg-gray-200 transition-colors"
-                >
-                  Mint CDH
-                </button>
+                {balance != undefined && (
+                  <>
+                    {balance != 0 ? (
+                      <p>
+                        <a
+                          className="underline"
+                          target="_blank"
+                          href={getBlockExplorerAddressLink(targetNetwork, porps.cdhContractData.address as any)}
+                        >
+                          Check Your CDH
+                        </a>
+                      </p>
+                    ) : (
+                      <button
+                        onClick={() => setIsMintCDHOpen(true)}
+                        className="absolute bottom-4 right-12 bg-white text-blue-500 rounded-full p-2 mr-1 shadow-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Mint CDH
+                      </button>
+                    )}
+                  </>
+                )}
                 <button
                   onClick={() => setIsOpen(true)}
                   className="absolute bottom-4 right-3 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors"

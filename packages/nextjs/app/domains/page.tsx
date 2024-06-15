@@ -18,6 +18,8 @@ const Domains: NextPage = () => {
   const contractsData = getAllContracts();
   const contractNames = Object.keys(contractsData) as ContractName[];
 
+  // get contractData
+  const { data: cdhContractData } = useDeployedContractInfo(contractNames[2]);
   const { data: deployedContractData } = useDeployedContractInfo(contractNames[0]);
 
   /**
@@ -47,7 +49,11 @@ const Domains: NextPage = () => {
         </div>
         {deployedContractData != undefined && (
           <div className="w-full justify-center">
-            <DomainCards deployedContractData={deployedContractData} filter={filter} />
+            <DomainCards
+              deployedContractData={deployedContractData}
+              cdhContractData={cdhContractData}
+              filter={filter}
+            />
           </div>
         )}
       </div>

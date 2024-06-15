@@ -22,9 +22,8 @@ export type ModalProps = {
 const MintCDHModal = (props: ModalProps) => {
   const [tokenUri, setTokenUri] = useState("");
 
-  const { writeContractAsync, writeContract } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
 
-  const { targetNetwork } = useTargetNetwork();
   const contractsData = getAllContracts();
   const contractNames = Object.keys(contractsData) as ContractName[];
   // get contractData
