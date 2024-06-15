@@ -1,4 +1,4 @@
-name: Lint
+name: Lint & Test Smart Contracts
 
 on:
   push:
