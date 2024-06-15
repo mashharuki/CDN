@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { PencilIcon } from "@heroicons/react/24/outline";
+import MintCDHModal from "~~/components/MintCDHModal";
 import Modal from "~~/components/Modal";
-import externalContracts from "~~/contracts/externalContracts";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 import { getBlockExplorerAddressLink, getBlockExplorerTokenLink } from "~~/utils/scaffold-eth";
 
@@ -23,6 +22,7 @@ type DomainCardPorps = {
  */
 export const DomainCard = (porps: DomainCardPorps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMintCDHOpen, setIsMintCDHOpen] = useState(false);
 
   const { targetNetwork } = useTargetNetwork();
   const { address } = useAccount();
@@ -66,8 +66,6 @@ export const DomainCard = (porps: DomainCardPorps) => {
     },
   });
 
-  const { writeContractAsync } = useWriteContract();
-
   /**
    * format address
    */
@@ -77,47 +75,6 @@ export const DomainCard = (porps: DomainCardPorps) => {
     const lastThree = str.slice(-3);
     return firstThree + "..." + lastThree;
   }
-
-  /**
-   * mint CDH
-   */
-  const mintCDH = async () => {
-    try {
-      await writeContractAsync({
-        // @ts-ignore
-        address: externalContracts[targetNetwork.id].CDH.address,
-        functionName: "safeMint",
-        // @ts-ignore
-        abi: externalContracts[targetNetwork.id].CDH.abi,
-        args: [address, record],
-        chainId: targetNetwork.id,
-        value: BigInt(Number(0)),
-      }).then(() => {
-        toast.success("🦄 Success!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-      });
-    } catch (err: any) {
-      console.error("err:", err);
-      toast.error("Failed....", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-    }
-  };
 
   useEffect(() => {
     const init = async () => {
@@ -140,6 +97,13 @@ export const DomainCard = (porps: DomainCardPorps) => {
           onOk={() => setIsOpen(false)}
           deployedContractData={porps.deployedContractData}
           domain={porps.name}
+        />
+        <MintCDHModal
+          open={isMintCDHOpen}
+          onCancel={() => setIsMintCDHOpen(false)}
+          onOk={() => setIsMintCDHOpen(false)}
+          deployedContractData={porps.deployedContractData}
+          address={address as string}
         />
         {record != undefined && owner != undefined && (
           <>
@@ -173,7 +137,7 @@ export const DomainCard = (porps: DomainCardPorps) => {
                     </p>
                   </div>
                   <button
-                    onClick={mintCDH}
+                    onClick={() => setIsMintCDHOpen(true)}
                     className="absolute bottom-4 right-12 bg-white text-blue-500 rounded-full p-2 mr-1 shadow-lg hover:bg-gray-200 transition-colors"
                   >
                     Mint CDH
@@ -202,6 +166,13 @@ export const DomainCard = (porps: DomainCardPorps) => {
           onOk={() => setIsOpen(false)}
           deployedContractData={porps.deployedContractData}
           domain={porps.name}
+        />
+        <MintCDHModal
+          open={isMintCDHOpen}
+          onCancel={() => setIsMintCDHOpen(false)}
+          onOk={() => setIsMintCDHOpen(false)}
+          deployedContractData={porps.deployedContractData}
+          address={address as string}
         />
         {record != undefined && owner != undefined && (
           <div className="card w-96 text-primary-content m-2 bg-gradient-to-r from-blue-500 via-orange-500 to-pink-500 text-white p-5 rounded-lg shadow-lg transition-transform transform hover:scale-105">
@@ -237,7 +208,7 @@ export const DomainCard = (porps: DomainCardPorps) => {
             {owner == address && (
               <>
                 <button
-                  onClick={mintCDH}
+                  onClick={() => setIsMintCDHOpen(true)}
                   className="absolute bottom-4 right-12 bg-white text-blue-500 rounded-full p-2 mr-1 shadow-lg hover:bg-gray-200 transition-colors"
                 >
                   Mint CDH
