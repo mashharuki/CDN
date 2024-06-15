@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAccount, useReadContract } from "wagmi";
+import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import Modal from "~~/components/Modal";
+import externalContracts from "~~/contracts/externalContracts";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 import { getBlockExplorerAddressLink, getBlockExplorerTokenLink } from "~~/utils/scaffold-eth";
 
@@ -39,7 +41,7 @@ export const DomainCard = (porps: DomainCardPorps) => {
       retry: true,
     },
   });
-
+  // get owner
   const { data: owner, refetch: getOwner } = useReadContract({
     address: porps.deployedContractData.address,
     functionName: "domains",
@@ -51,7 +53,7 @@ export const DomainCard = (porps: DomainCardPorps) => {
       retry: true,
     },
   });
-
+  // get tokenUri
   const { data: tokenUri, refetch: getTokenUri } = useReadContract({
     address: porps.deployedContractData.address,
     functionName: "tokenURI",
@@ -64,6 +66,8 @@ export const DomainCard = (porps: DomainCardPorps) => {
     },
   });
 
+  const { writeContractAsync } = useWriteContract();
+
   /**
    * format address
    */
@@ -73,6 +77,47 @@ export const DomainCard = (porps: DomainCardPorps) => {
     const lastThree = str.slice(-3);
     return firstThree + "..." + lastThree;
   }
+
+  /**
+   * mint CDH
+   */
+  const mintCDH = async () => {
+    try {
+      await writeContractAsync({
+        // @ts-ignore
+        address: externalContracts[targetNetwork.id].CDH.address,
+        functionName: "safeMint",
+        // @ts-ignore
+        abi: externalContracts[targetNetwork.id].CDH.abi,
+        args: [address, record],
+        chainId: targetNetwork.id,
+        value: BigInt(Number(0)),
+      }).then(() => {
+        toast.success("🦄 Success!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      });
+    } catch (err: any) {
+      console.error("err:", err);
+      toast.error("Failed....", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
 
   useEffect(() => {
     const init = async () => {
@@ -127,7 +172,10 @@ export const DomainCard = (porps: DomainCardPorps) => {
                       </a>
                     </p>
                   </div>
-                  <button className="absolute bottom-4 right-12 bg-white text-blue-500 rounded-full p-2 mr-1 shadow-lg hover:bg-gray-200 transition-colors">
+                  <button
+                    onClick={mintCDH}
+                    className="absolute bottom-4 right-12 bg-white text-blue-500 rounded-full p-2 mr-1 shadow-lg hover:bg-gray-200 transition-colors"
+                  >
                     Mint CDH
                   </button>
                   <button
@@ -188,7 +236,10 @@ export const DomainCard = (porps: DomainCardPorps) => {
             </div>
             {owner == address && (
               <>
-                <button className="absolute bottom-4 right-12 bg-white text-blue-500 rounded-full p-2 mr-1 shadow-lg hover:bg-gray-200 transition-colors">
+                <button
+                  onClick={mintCDH}
+                  className="absolute bottom-4 right-12 bg-white text-blue-500 rounded-full p-2 mr-1 shadow-lg hover:bg-gray-200 transition-colors"
+                >
                   Mint CDH
                 </button>
                 <button
