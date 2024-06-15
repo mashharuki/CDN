@@ -22,6 +22,7 @@
     "hardhat:lint": "yarn workspace @se-2/hardhat lint",
     "hardhat:lint-staged": "yarn workspace @se-2/hardhat lint-staged",
     "hardhat:format": "yarn workspace @se-2/hardhat format",
+    "hardhat:compile": "yarn workspace @se-2/hardhat compile",
     "hardhat:test": "yarn workspace @se-2/hardhat test",
     "hardhat:register": "yarn workspace @se-2/hardhat task:register",
     "hardhat:price": "yarn workspace @se-2/hardhat task:price",

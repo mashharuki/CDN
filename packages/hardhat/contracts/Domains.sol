@@ -6,11 +6,12 @@ import {StringUtils} from "./lib/StringUtils.sol";
 import {Base64} from "./lib/Base64.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/metatx/ERC2771Context.sol";
 
 /**
  * Domains Cotract
  */
-contract Domains is ERC721URIStorage {
+contract Domains is ERC721URIStorage, ERC2771Context {
   // トークンID用の変数を用意する。
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
@@ -33,7 +34,7 @@ contract Domains is ERC721URIStorage {
 
   // event
   event Register(address owner, string name);
-  event SetRecord(address owner, string name ,string record);
+  event SetRecord(address owner, string name, string record);
 
   // カスタムエラー用の変数
   error Unauthorized();
@@ -51,8 +52,13 @@ contract Domains is ERC721URIStorage {
    * @param _tld トップレベルドメイン
    */
   constructor(
-    string memory _tld
-  ) payable ERC721("CrossValueChain Domain Name Service", "CDN") {
+    string memory _tld,
+    address _trustedForwarder
+  )
+    payable
+    ERC721("CrossValueChain Domain Name Service", "CDN")
+    ERC2771Context(_trustedForwarder)
+  {
     // owner addressを設定する。
     owner = payable(msg.sender);
     tld = _tld;
@@ -166,14 +172,14 @@ contract Domains is ERC721URIStorage {
     if (msg.sender != domains[name]) revert Unauthorized();
     // 登録する。
     records[name] = record;
-    emit SetRecord(msg.sender, name , record);
+    emit SetRecord(msg.sender, name, record);
   }
 
   /**
    * checkRegistered メソッド
    */
   function checkRegistered(string memory _name) public view returns (bool) {
-    if(domains[_name] == address(0)) {
+    if (domains[_name] == address(0)) {
       return true;
     } else {
       return false;
@@ -227,5 +233,39 @@ contract Domains is ERC721URIStorage {
    */
   function valid(string calldata name) private pure returns (bool) {
     return StringUtils.strlen(name) >= 3 && StringUtils.strlen(name) <= 10;
+  }
+
+  ///////////////////////////////// ERC2771 method /////////////////////////////////
+
+  function _msgSender()
+    internal
+    view
+    virtual
+    override(Context, ERC2771Context)
+    returns (address sender)
+  {
+    if (isTrustedForwarder(msg.sender)) {
+      // The assembly code is more direct than the Solidity version using `abi.decode`.
+      /// @solidity memory-safe-assembly
+      assembly {
+        sender := shr(96, calldataload(sub(calldatasize(), 20)))
+      }
+    } else {
+      return super._msgSender();
+    }
+  }
+
+  function _msgData()
+    internal
+    view
+    virtual
+    override(Context, ERC2771Context)
+    returns (bytes calldata)
+  {
+    if (isTrustedForwarder(msg.sender)) {
+      return msg.data[:msg.data.length - 20];
+    } else {
+      return super._msgData();
+    }
   }
 }
