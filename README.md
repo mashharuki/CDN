@@ -1,5 +1,7 @@
 # 🏗 CrossValueChain Domain Name Service (CDN)
 
+[![Lint & Test Smart Contracts](https://github.com/mashharuki/CDN/actions/workflows/lint.yaml/badge.svg)](https://github.com/mashharuki/CDN/actions/workflows/lint.yaml)
+
 ## What it does
 
 The CrossValueChain Domain Name Service simplifies the ethereal address, which is a long string of alphanumeric characters starting with "0x," to make it easier to remember and simpler to use as a string of characters(like ENS).
@@ -44,10 +46,10 @@ Update fronted
 
 ### Wave3
 
-There are 3 update points.  
+There are 3 update points.
 
-- I Changed the contents of the Home Page to allow users to check and register domains from the Home Page.  
-- I Added filter function to the All Domains screen. You can now search only for domains that you own.  
+- I Changed the contents of the Home Page to allow users to check and register domains from the Home Page.
+- I Added filter function to the All Domains screen. You can now search only for domains that you own.
 - I Added ability to update records on the All Domains screen. Allows you to set any record for any domain you own.
 
 ### Wave4
