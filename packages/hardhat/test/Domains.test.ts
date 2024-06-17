@@ -206,7 +206,6 @@ describe("Domains", function () {
         .execute(result.request, result.signature)
         .then(async (tx) => {
           tx.wait();
-          console.log({tx});
         });
     });
   });

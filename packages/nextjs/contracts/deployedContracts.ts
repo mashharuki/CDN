@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   5555: {
     Domains: {
-      address: "0x6E73AE14C43145b8f8044C707642cc6e3C053224",
+      address: "0xF09d5a398239b32071c33945bFcdA29BCb0B842A",
       abi: [
         {
           inputs: [
@@ -15,6 +15,11 @@ const deployedContracts = {
               internalType: "string",
               name: "_tld",
               type: "string",
+            },
+            {
+              internalType: "address",
+              name: "_trustedForwarder",
+              type: "address",
             },
           ],
           stateMutability: "payable",
@@ -375,6 +380,25 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "address",
+              name: "forwarder",
+              type: "address",
+            },
+          ],
+          name: "isTrustedForwarder",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [],
           name: "name",
           outputs: [
@@ -695,6 +719,224 @@ const deployedContracts = {
           "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
         transferFrom:
           "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        isTrustedForwarder: "@openzeppelin/contracts/metatx/ERC2771Context.sol",
+      },
+    },
+    SampleForwarder: {
+      address: "0xacff3BF500e0E9F7734D39064B290873d80Fe749",
+      abi: [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [],
+          name: "InvalidShortString",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "str",
+              type: "string",
+            },
+          ],
+          name: "StringTooLong",
+          type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [],
+          name: "EIP712DomainChanged",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "eip712Domain",
+          outputs: [
+            {
+              internalType: "bytes1",
+              name: "fields",
+              type: "bytes1",
+            },
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "version",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "chainId",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "verifyingContract",
+              type: "address",
+            },
+            {
+              internalType: "bytes32",
+              name: "salt",
+              type: "bytes32",
+            },
+            {
+              internalType: "uint256[]",
+              name: "extensions",
+              type: "uint256[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              components: [
+                {
+                  internalType: "address",
+                  name: "from",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "to",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "value",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "gas",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "nonce",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes",
+                  name: "data",
+                  type: "bytes",
+                },
+              ],
+              internalType: "struct MinimalForwarder.ForwardRequest",
+              name: "req",
+              type: "tuple",
+            },
+            {
+              internalType: "bytes",
+              name: "signature",
+              type: "bytes",
+            },
+          ],
+          name: "execute",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+            {
+              internalType: "bytes",
+              name: "",
+              type: "bytes",
+            },
+          ],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+          ],
+          name: "getNonce",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              components: [
+                {
+                  internalType: "address",
+                  name: "from",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "to",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "value",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "gas",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "nonce",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes",
+                  name: "data",
+                  type: "bytes",
+                },
+              ],
+              internalType: "struct MinimalForwarder.ForwardRequest",
+              name: "req",
+              type: "tuple",
+            },
+            {
+              internalType: "bytes",
+              name: "signature",
+              type: "bytes",
+            },
+          ],
+          name: "verify",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {
+        eip712Domain: "@openzeppelin/contracts/metatx/MinimalForwarder.sol",
+        execute: "@openzeppelin/contracts/metatx/MinimalForwarder.sol",
+        getNonce: "@openzeppelin/contracts/metatx/MinimalForwarder.sol",
+        verify: "@openzeppelin/contracts/metatx/MinimalForwarder.sol",
       },
     },
     YourContract: {

@@ -1,6 +1,7 @@
 {
   "contracts": {
     "YourContract": "0xe65C3cFDc4f79e36343cA2e79f17Ce8338095F4c",
-    "Domains": "0x6E73AE14C43145b8f8044C707642cc6e3C053224"
+    "Domains": "0xF09d5a398239b32071c33945bFcdA29BCb0B842A",
+    "SampleForwarder": "0xacff3BF500e0E9F7734D39064B290873d80Fe749"
   }
 }

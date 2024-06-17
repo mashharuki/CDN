@@ -54,6 +54,10 @@ There are 3 update points.
 
 ### Wave4
 
+- SampleForwarder Contract
+
+- Updated Domains Contract (NFT)
+
 ### Wave5
 
 ## What's next for future Wave

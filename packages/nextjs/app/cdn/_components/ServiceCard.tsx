@@ -1,29 +1,37 @@
 "use client";
 
 import { useState } from "react";
+import { Contract, ethers } from "ethers";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { formatEther } from "viem";
-import { useReadContract, useWriteContract } from "wagmi";
+import { useAccount, useReadContract, useSignTypedData, useWriteContract } from "wagmi";
 import Loading from "~~/components/Loading";
+import { useEthersSigner } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
+import { ForwardRequest } from "~~/utils/types";
 
 type ContractUIProps = {
   deployedContractData?: any;
+  SampleForwarderContractData?: any;
 };
 
 /**
  * ServiceCard Components
  * @returns
  */
-export const ServiceCard = ({ deployedContractData }: ContractUIProps) => {
+export const ServiceCard = ({ deployedContractData, SampleForwarderContractData }: ContractUIProps) => {
   const [domain, setDomain] = useState<string>();
   const [price, setPrice] = useState<any>();
   const { targetNetwork } = useTargetNetwork();
+  const { signTypedDataAsync } = useSignTypedData();
+  const { address } = useAccount();
 
-  console.log(deployedContractData);
+  const { isPending } = useWriteContract();
+  // get signer object
+  const signer = useEthersSigner({ chainId: targetNetwork.id });
 
-  const { isPending, writeContractAsync } = useWriteContract();
+  // get checkRegistered function
   const { data, refetch } = useReadContract({
     address: deployedContractData.address,
     functionName: "checkRegistered",
@@ -31,12 +39,24 @@ export const ServiceCard = ({ deployedContractData }: ContractUIProps) => {
     args: [domain as any],
     chainId: targetNetwork.id,
   });
-
+  // get price function
   const { data: domainPrice, refetch: getPrice } = useReadContract({
     address: deployedContractData.address,
     functionName: "price",
     abi: deployedContractData.abi,
     args: [domain as any],
+    chainId: targetNetwork.id,
+    query: {
+      enabled: true,
+      retry: true,
+    },
+  });
+  // get signer's nonce
+  const { data: nonce, refetch: getNonce } = useReadContract({
+    address: SampleForwarderContractData.address,
+    functionName: "getNonce",
+    abi: SampleForwarderContractData.abi,
+    args: [address as any],
     chainId: targetNetwork.id,
     query: {
       enabled: true,
@@ -83,15 +103,62 @@ export const ServiceCard = ({ deployedContractData }: ContractUIProps) => {
    */
   const register = async () => {
     try {
-      // register domain
-      await writeContractAsync({
-        address: deployedContractData.address,
-        functionName: "register",
-        abi: deployedContractData.abi,
-        args: [domain as any],
-        chainId: targetNetwork.id,
-        value: BigInt(Number(price)),
-      }).then(() => {
+      // get nonce
+      await getNonce();
+      console.log("nonce:", nonce);
+      console.log("price:", price);
+
+      // create Contract object
+      const domains: any = new Contract(deployedContractData.address, deployedContractData.abi, signer) as any;
+      const forwarder: any = new Contract(
+        SampleForwarderContractData.address,
+        SampleForwarderContractData.abi,
+        signer,
+      ) as any;
+      // get domain
+      const domainData = await forwarder.eip712Domain();
+      console.log("domain:", domainData);
+      // generate encoded data
+      const data = domains.interface.encodeFunctionData("register", [domain]);
+      // genearte signature
+      const signature = await signTypedDataAsync({
+        domain: {
+          name: domainData[1],
+          version: domainData[2],
+          chainId: domainData[3],
+          verifyingContract: domainData[4] as any,
+        },
+        types: {
+          ForwardRequest: ForwardRequest,
+        },
+        primaryType: "ForwardRequest",
+        message: {
+          from: address,
+          to: deployedContractData.address,
+          value: ethers.parseEther(price.toString()),
+          gas: 360000,
+          nonce: nonce,
+          data: data,
+        },
+      });
+
+      // request forward request
+      await fetch("/api/requestRelayer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: address?.toString(),
+          to: deployedContractData.address.toString(),
+          value: ethers.parseEther(price.toString()).toString(),
+          gas: 360000n,
+          nonce: nonce,
+          data: data.toString(),
+          signature: signature.toString(),
+        }),
+      }).then(async (result: any) => {
+        console.log("gasless result:", await result.json());
         toast.success("🦄 Success!", {
           position: "top-right",
           autoClose: 5000,

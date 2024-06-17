@@ -16,6 +16,7 @@ const Home: NextPage = () => {
   const contractNames = Object.keys(contractsData) as ContractName[];
 
   const { data: deployedContractData } = useDeployedContractInfo(contractNames[0]);
+  const { data: SampleForwarderContractData } = useDeployedContractInfo(contractNames[1]);
 
   return (
     <>
@@ -25,7 +26,11 @@ const Home: NextPage = () => {
             <span className="block text-4xl font-bold">CrossValueChain Domain Name Service Page</span>
           </h1>
           {deployedContractData != undefined && (
-            <ServiceCard key={contractNames[0].toString()} deployedContractData={deployedContractData} />
+            <ServiceCard
+              key={contractNames[0].toString()}
+              deployedContractData={deployedContractData}
+              SampleForwarderContractData={SampleForwarderContractData}
+            />
           )}
         </div>
       </div>
