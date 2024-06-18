@@ -27,7 +27,7 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
   const { signTypedDataAsync } = useSignTypedData();
   const { address } = useAccount();
 
-  const { isPending } = useWriteContract();
+  const { isPending, writeContractAsync } = useWriteContract();
   // get signer object
   const signer = useEthersSigner({ chainId: targetNetwork.id });
 
@@ -105,8 +105,11 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
     try {
       // get nonce
       await getNonce();
+      console.log("address:", address);
+      console.log("deployedContractData.address:", deployedContractData.address);
       console.log("nonce:", nonce);
       console.log("price:", price);
+      console.log("price:", ethers.formatEther(price.toString()));
 
       // create Contract object
       const domains: any = new Contract(deployedContractData.address, deployedContractData.abi, signer) as any;
@@ -117,16 +120,15 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
       ) as any;
       // get domain
       const domainData = await forwarder.eip712Domain();
-      console.log("domain:", domainData);
       // generate encoded data
       const data = domains.interface.encodeFunctionData("register", [domain]);
       // genearte signature
       const signature = await signTypedDataAsync({
         domain: {
-          name: domainData[1],
-          version: domainData[2],
-          chainId: domainData[3],
-          verifyingContract: domainData[4] as any,
+          name: domainData.name,
+          version: domainData.version,
+          chainId: domainData.chainId,
+          verifyingContract: domainData.verifyingContract as any,
         },
         types: {
           ForwardRequest: ForwardRequest,
@@ -135,28 +137,53 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
         message: {
           from: address,
           to: deployedContractData.address,
-          value: ethers.parseEther(price.toString()),
-          gas: 360000,
+          value: price,
+          gas: 400000,
           nonce: nonce,
           data: data,
         },
       });
+      console.log("signature:", signature);
+      // 事前に署名データを検証
+      const result = await forwarder.verify(
+        {
+          from: address,
+          to: deployedContractData.address,
+          value: price,
+          gas: 400000,
+          nonce: nonce,
+          data: data,
+        },
+        signature,
+      );
+      console.log("verify result: ", result);
 
-      // request forward request
+      // register domain
+      await writeContractAsync({
+        address: deployedContractData.address,
+        functionName: "register",
+        abi: deployedContractData.abi,
+        args: [domain as any],
+        chainId: targetNetwork.id,
+        value: BigInt(Number(price)),
+
+        /*
+        // request forward request
       await fetch("/api/requestRelayer", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: address?.toString(),
-          to: deployedContractData.address.toString(),
-          value: ethers.parseEther(price.toString()).toString(),
-          gas: 360000n,
-          nonce: nonce,
-          data: data.toString(),
-          signature: signature.toString(),
+          from: address,
+          to: deployedContractData.address,
+          value: price,
+          gas: 400000,
+          nonce: (nonce as any).toString(),
+          data: data,
+          signature: signature,
         }),
+        */
       }).then(async (result: any) => {
         console.log("gasless result:", await result.json());
         toast.success("🦄 Success!", {
