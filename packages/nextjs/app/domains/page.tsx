@@ -19,8 +19,12 @@ const Domains: NextPage = () => {
   const contractNames = Object.keys(contractsData) as ContractName[];
 
   // get contractData
-  const { data: cdhContractData } = useDeployedContractInfo(contractNames[2]);
+  const { data: cdhContractData } = useDeployedContractInfo(contractNames[3]);
   const { data: deployedContractData } = useDeployedContractInfo(contractNames[0]);
+
+  console.log("contractNames[2]", contractNames);
+  console.log("cdhContractData", cdhContractData);
+  console.log("deployedContractData", deployedContractData);
 
   /**
    * プルダウンで選択した時に変更する。
@@ -47,7 +51,7 @@ const Domains: NextPage = () => {
             </select>
           </div>
         </div>
-        {deployedContractData != undefined && (
+        {deployedContractData != undefined && cdhContractData != undefined && (
           <div className="w-full justify-center">
             <DomainCards
               deployedContractData={deployedContractData}

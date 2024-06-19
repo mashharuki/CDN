@@ -13,7 +13,7 @@ export async function POST(request: any) {
     " ========================================= [RequestRaler: START] ==============================================",
   );
 
-  const data = request;
+  const data = request.json();
   console.log("data:", data);
   const body: any = request?.body;
   if (body === undefined) {
