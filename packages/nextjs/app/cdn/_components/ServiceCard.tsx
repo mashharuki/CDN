@@ -184,8 +184,8 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
           signature: signature,
         }),
         */
-      }).then(async (result: any) => {
-        console.log("gasless result:", await result.json());
+      }).then(async () => {
+        // console.log("gasless result:", await result.json());
         toast.success("🦄 Success!", {
           position: "top-right",
           autoClose: 5000,
