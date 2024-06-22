@@ -7,7 +7,7 @@ import {Base64} from "./lib/Base64.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/metatx/ERC2771Context.sol";
-import "./NFTMarketplace.sol";
+import "./interfaces/INFTMarketplace.sol";
 
 /**
  * Domains Cotract
@@ -37,13 +37,15 @@ contract Domains is ERC721URIStorage, ERC2771Context {
   // ドメイン所有者ごとの所有ドメインを保持するマップ
   mapping(address => string[]) public ownerDomains;
   // ドメインの有効期限を管理するマップ
-  mapping(uint => uint) public expirationDates;
+  mapping(uint256 => uint256) public expirationDates;
 
   // event
   event Register(address owner, string name);
   event SetRecord(address owner, string name, string record);
-  event DomainExpired(uint tokenId);
-  event DomainTransferred(uint tokenId, address newOwner);
+  event DomainExpired(uint256 tokenId);
+  event DomainTransferred(uint256 tokenId, address newOwner);
+  event Received(address indexed sender, uint256 amount);
+  event FallbackReceived(address indexed sender, uint256 amount);
 
   // カスタムエラー用の変数
   error Unauthorized();
@@ -57,7 +59,7 @@ contract Domains is ERC721URIStorage, ERC2771Context {
   }
 
   // 有効期限が切れているかを確認する修飾子
-  modifier onlyValidToken(uint tokenId) {
+  modifier onlyValidToken(uint256 tokenId) {
     require(expirationDates[tokenId] > block.timestamp, "Token expired");
     _;
   }
@@ -135,13 +137,6 @@ contract Domains is ERC721URIStorage, ERC2771Context {
     uint256 length = StringUtils.strlen(name);
     string memory strLen = Strings.toString(length);
 
-    console.log(
-      "Registering %s.%s on the contract with tokenID %d",
-      name,
-      tld,
-      newRecordId
-    );
-
     // SVGのデータをBase64の形式でエンコードする。
     string memory json = Base64.encode(
       abi.encodePacked(
@@ -159,10 +154,6 @@ contract Domains is ERC721URIStorage, ERC2771Context {
       abi.encodePacked("data:application/json;base64,", json)
     );
 
-    console.log("\n--------------------------------------------------------");
-    console.log("Final tokenURI", finalTokenUri);
-    console.log("--------------------------------------------------------\n");
-
     // NFTとして発行する。
     _safeMint(msg.sender, newRecordId);
     // トークンURI情報を登録する。
@@ -179,6 +170,23 @@ contract Domains is ERC721URIStorage, ERC2771Context {
 
     _tokenIds.increment();
     emit Register(msg.sender, name);
+  }
+
+  /**
+   * アドレスとドメインの紐付けを更新するメソッド
+   * ※ ミントではなく移動させるだけの場合のメソッド
+   */
+  function updateAddress(
+    string calldata name,
+    address _address,
+    uint256 _tokenId,
+    uint256 _years
+  ) public {
+    // 登録する。
+    domains[name] = _address;
+    // 有効期限を設定する。
+    expirationDates[_tokenId] = block.timestamp + (_years * 365 days);
+    emit Register(_address, name);
   }
 
   /**
@@ -267,7 +275,7 @@ contract Domains is ERC721URIStorage, ERC2771Context {
   /**
    * 有効期限をチェックして、期限切れのドメインをburnするメソッド
    */
-  function checkExpiration(uint tokenId) public {
+  function checkExpiration(uint256 tokenId) public {
     // 有効期限を過ぎていた場合はburnする。
     if (block.timestamp > expirationDates[tokenId]) {
       // NFTマーケットプレイスにdetachする。
@@ -285,7 +293,7 @@ contract Domains is ERC721URIStorage, ERC2771Context {
    * ドメイン所有権を別のアドレスに移行するメソッド
    * @param tokenId トークンID
    */
-  function detach(uint tokenId) internal onlyValidToken(tokenId) {
+  function detach(uint256 tokenId) internal {
     // トランザクションの送信者が所有者であることを確認する。
     require(
       msg.sender == ownerOf(tokenId),
@@ -294,6 +302,12 @@ contract Domains is ERC721URIStorage, ERC2771Context {
 
     // ドメイン名を取得する。
     string memory domainName = names[tokenId];
+
+    // マーケットプレイスコントラクトに権限を移譲する。
+    approve(marketplaceAddress, tokenId);
+
+    // マーケットプレイスコントラクトのlistItemメソッドを呼び出す
+    INFTMarketplace(marketplaceAddress).listItem(tokenId);
 
     // 新しい所有者にNFTを転送する。
     _transfer(msg.sender, marketplaceAddress, tokenId);
@@ -315,9 +329,6 @@ contract Domains is ERC721URIStorage, ERC2771Context {
 
     // 新しい所有者のドメインリストにドメインを追加する。
     ownerDomains[marketplaceAddress].push(domainName);
-
-    // マーケットプレイスコントラクトのlistItemメソッドを呼び出す
-    NFTMarketplace(marketplaceAddress).listItem(tokenId);
 
     emit DomainTransferred(tokenId, marketplaceAddress);
   }
@@ -361,5 +372,15 @@ contract Domains is ERC721URIStorage, ERC2771Context {
     } else {
       return super._msgData();
     }
+  }
+
+  receive() external payable {
+    // ETHの受け取りと処理
+    emit Received(msg.sender, msg.value);
+  }
+
+  fallback() external payable {
+    // ETHの受け取りと処理
+    emit FallbackReceived(msg.sender, msg.value);
   }
 }

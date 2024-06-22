@@ -9,6 +9,7 @@ import {
   SampleForwarder__factory,
 } from "../typechain-types";
 import {ForwardRequest} from "../lib/types";
+import {time} from "@nomicfoundation/hardhat-network-helpers";
 
 describe("Domains", function () {
   // We define a fixture to reuse the same setup in every test.
@@ -40,8 +41,10 @@ describe("Domains", function () {
       marketplace.target
     );
     await domains.waitForDeployment();
+    // NFTMarketplaceにDomainsをセット
+    await marketplace.setDomainsContract(domains.target);
 
-    return {domains, forwarder, account1, account2};
+    return {domains, forwarder, marketplace, account1, account2};
   }
 
   /**
@@ -104,6 +107,77 @@ describe("Domains", function () {
       signature: signature,
     };
   }
+
+  describe("Marketplace", function () {
+    it("Should emit Domain Transfer event", async function () {
+      const {domains, marketplace, account1} = await deployContract();
+      const price = await domains.price("domain", 1);
+      const txn = await domains.connect(account1).register("domain", 1, {
+        value: ethers.parseEther(await ethers.formatEther(price)),
+      });
+      await txn.wait();
+
+      // 1年経過させる。
+      await time.increase(365 * 24 * 60 * 60 + 1);
+
+      // checkExpirationを実行し、トランザクションが成功するか確認する
+      const tx = await domains.connect(account1).checkExpiration(0);
+
+      // イベントがハッカしているか確認
+      await expect(tx)
+        .to.emit(domains, "DomainTransferred")
+        .withArgs(0, marketplace.target);
+    });
+    it("Should list and buy domain successfully", async function () {
+      const {domains, marketplace, account1, account2} = await deployContract();
+      const price = await domains.price("domain", 1);
+      const txn = await domains.connect(account1).register("domain", 1, {
+        value: ethers.parseEther(await ethers.formatEther(price)),
+      });
+      await txn.wait();
+
+      // 1年経過させる。
+      await time.increase(365 * 24 * 60 * 60 + 1);
+
+      const txn2 = await domains.connect(account1).checkExpiration(0);
+      await txn2.wait();
+
+      // イベントがハッカしているか確認
+      await expect(txn2)
+        .to.emit(marketplace, "Listed")
+        .withArgs(0, domains.target);
+
+      await marketplace.connect(account2).buyItem(0, "domain", 1, {
+        value: ethers.parseEther("0.01"),
+      });
+
+      const domainOwner = await domains.domains("domain");
+      expect(domainOwner).to.equal(account2.address);
+    });
+
+    it("Should emit BuyItem event", async function () {
+      const {domains, marketplace, account1, account2} = await deployContract();
+      const price = await domains.price("sample", 1);
+      const txn = await domains.connect(account1).register("sample", 1, {
+        value: ethers.parseEther(await ethers.formatEther(price)),
+      });
+      await txn.wait();
+
+      // 1年経過させる。
+      await time.increase(365 * 24 * 60 * 60 + 1);
+
+      const txn2 = await domains.connect(account1).checkExpiration(0);
+      await txn2.wait();
+
+      await expect(
+        marketplace.connect(account2).buyItem(0, "sample", 1, {
+          value: ethers.parseEther("0.01"),
+        })
+      )
+        .to.emit(marketplace, "Sold")
+        .withArgs(0, account2.address, price);
+    });
+  });
 
   describe("Deployment", function () {
     it("Should have the right balance on deploy", async function () {
@@ -193,6 +267,26 @@ describe("Domains", function () {
       const allNames = await domains.getAllNames();
       expect(allNames.length).to.equal(1);
       expect(allNames[0]).to.equal("haruki4");
+    });
+
+    it("Should burn domain after expiration", async function () {
+      const {domains, account1} = await deployContract();
+      const price = await domains.price("expire", 1);
+      const txn = await domains.connect(account1).register("expire", 1, {
+        value: ethers.parseEther(await ethers.formatEther(price)),
+      });
+      await txn.wait();
+
+      const domainOwner = await domains.domains("expire");
+      expect(domainOwner).to.equal(account1.address);
+      // 1年経過させる。
+      await time.increase(365 * 24 * 60 * 60 + 1);
+      // check expired
+      const txn2 = await domains.connect(account1).checkExpiration(0);
+      await txn2.wait();
+      // 所有状況を確認する。
+      const expiredOwner = await domains.domains("expire");
+      expect(expiredOwner).to.equal(ethers.ZeroAddress);
     });
   });
 

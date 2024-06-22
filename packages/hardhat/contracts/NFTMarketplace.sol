@@ -5,7 +5,8 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./Domains.sol";
+import "./interfaces/IDomains.sol";
+import "hardhat/console.sol";
 
 contract NFTMarketplace is ReentrancyGuard, Ownable {
   // リスティング情報
@@ -20,6 +21,8 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
   event Listed(uint256 indexed tokenId, address indexed seller);
   event Canceled(uint256 indexed tokenId, address indexed seller);
   event Sold(uint256 indexed tokenId, address indexed buyer, uint256 price);
+  event Received(address indexed sender, uint256 amount);
+  event FallbackReceived(address indexed sender, uint256 amount);
 
   constructor() {}
 
@@ -39,11 +42,7 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
    */
   function listItem(uint256 tokenId) external nonReentrant {
     require(
-      Domains(domainsContractAddress).ownerOf(tokenId) == msg.sender,
-      "You are not the owner"
-    );
-    require(
-      Domains(domainsContractAddress).getApproved(tokenId) == address(this),
+      IDomains(domainsContractAddress).getApproved(tokenId) == address(this),
       "Marketplace not approved"
     );
 
@@ -64,19 +63,25 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
     uint256 duration
   ) external payable nonReentrant {
     Listing memory listing = listings[tokenId];
+    console.log("listing.seller: %s", listing.seller);
     require(listing.seller != address(0), "Item not listed");
 
-    uint256 totalPrice = Domains(domainsContractAddress).price(name, duration);
+    uint256 totalPrice = IDomains(domainsContractAddress).price(name, duration);
     require(msg.value >= totalPrice, "Not enough Ether sent");
 
     address seller = listing.seller;
 
-    // ドメインを登録する
-    Domains(domainsContractAddress).register{value: totalPrice}(name, duration);
+    // アドレスとドメインの紐付けを更新
+    IDomains(domainsContractAddress).updateAddress(
+      name,
+      msg.sender,
+      tokenId,
+      duration
+    );
 
     // NFTの所有権を新しい所有者に移動
-    Domains(domainsContractAddress).safeTransferFrom(
-      seller,
+    IDomains(domainsContractAddress).safeTransferFrom(
+      address(this),
       msg.sender,
       tokenId
     );
@@ -119,5 +124,15 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
    */
   function getListing(uint256 tokenId) external view returns (Listing memory) {
     return listings[tokenId];
+  }
+
+  receive() external payable {
+    // ETHの受け取りと処理
+    emit Received(msg.sender, msg.value);
+  }
+
+  fallback() external payable {
+    // ETHの受け取りと処理
+    emit FallbackReceived(msg.sender, msg.value);
   }
 }
