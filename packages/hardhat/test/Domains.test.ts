@@ -3,6 +3,8 @@ import {expect} from "chai";
 import {ethers} from "hardhat";
 import {
   Domains,
+  NFTMarketplace,
+  NFTMarketplace__factory,
   SampleForwarder,
   SampleForwarder__factory,
 } from "../typechain-types";
@@ -25,9 +27,18 @@ describe("Domains", function () {
       await ethers.getContractFactory("SampleForwarder");
     const forwarder: SampleForwarder = await SampleForwarder.deploy();
     await forwarder.waitForDeployment();
+    // deploy NFTMarketPlace Contract
+    const NFTMarketplace: NFTMarketplace__factory =
+      await ethers.getContractFactory("NFTMarketplace");
+    const marketplace: NFTMarketplace = await NFTMarketplace.deploy();
+    await marketplace.waitForDeployment();
     // deploy contract
     const Domains = await ethers.getContractFactory("Domains");
-    const domains: Domains = await Domains.deploy("xcr", forwarder.target);
+    const domains: Domains = await Domains.deploy(
+      "xcr",
+      forwarder.target,
+      marketplace.target
+    );
     await domains.waitForDeployment();
 
     return {domains, forwarder, account1, account2};
@@ -117,8 +128,10 @@ describe("Domains", function () {
   describe("Register", function () {
     it("Check Register function", async function () {
       const {domains, account1} = await deployContract();
-      const txn = await domains.connect(account1).register("haruki", {
-        value: ethers.parseEther("1234"),
+      // priceを取得
+      const price = await domains.price("haruki", 2);
+      const txn = await domains.connect(account1).register("haruki", 2, {
+        value: ethers.parseEther(await ethers.formatEther(price)),
       });
       await txn.wait();
 
@@ -127,18 +140,22 @@ describe("Domains", function () {
 
       const balance = await ethers.provider.getBalance(domains.target);
       const currentBalance = ethers.formatEther(balance);
-      expect(currentBalance).to.equal("1234.0");
+      expect(currentBalance).to.equal("0.01");
     });
 
     it("Check Register × 2 function", async function () {
       const {domains, account2} = await deployContract();
-      const txn = await domains.register("haruki2", {
-        value: ethers.parseEther("1234"),
+      // priceを取得
+      const price = await domains.price("haruki2", 2);
+      const txn = await domains.register("haruki2", 2, {
+        value: ethers.parseEther(await ethers.formatEther(price)),
       });
       await txn.wait();
 
-      const txn2 = await domains.connect(account2).register("haruki3", {
-        value: ethers.parseEther("1234"),
+      // priceを取得
+      const price2 = await domains.price("haruki3", 2);
+      const txn2 = await domains.connect(account2).register("haruki3", 2, {
+        value: ethers.parseEther(await ethers.formatEther(price2)),
       });
       await txn2.wait();
 
@@ -147,13 +164,15 @@ describe("Domains", function () {
 
       const balance = await ethers.provider.getBalance(domains.target);
       const currentBalance = ethers.formatEther(balance);
-      expect(currentBalance).to.equal("2468.0");
+      expect(currentBalance).to.equal("0.02");
     });
 
     it("Withdraw", async function () {
       const {domains, account1} = await deployContract();
-      const txn = await domains.connect(account1).register("haruki4", {
-        value: ethers.parseEther("1234"),
+      // priceを取得
+      const price = await domains.price("haruki4", 2);
+      const txn = await domains.connect(account1).register("haruki4", 2, {
+        value: ethers.parseEther(await ethers.formatEther(price)),
       });
       await txn.wait();
 
@@ -162,7 +181,7 @@ describe("Domains", function () {
 
       const balance = await ethers.provider.getBalance(domains.target);
       const currentBalance = ethers.formatEther(balance);
-      expect(currentBalance).to.equal("1234.0");
+      expect(currentBalance).to.equal("0.01");
 
       await domains.withdraw();
       // check balance after withdraw
@@ -183,10 +202,13 @@ describe("Domains", function () {
       // create encode function data
       const data = domains.interface.encodeFunctionData("register", [
         "haruki5",
+        2,
       ]);
 
       // get domain
       const domain = await forwarder.eip712Domain();
+      // get price
+      const price = await domains.price("haruki5", 2);
 
       // create relayer
       const relayer = account2;
@@ -196,7 +218,7 @@ describe("Domains", function () {
         domain,
         account1,
         domains.target as string,
-        1234,
+        Number(await ethers.formatEther(price)),
         data
       );
 
