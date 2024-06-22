@@ -60,6 +60,13 @@ There are 3 update points.
 
 ### Wave5
 
+- 所有している DNS の一覧取得機能の追加
+- DNS の所有に有効期限を付与(有効期限が過ぎたら自動的に burn)
+
+### Wave6
+
+### Wave7
+
 ## What's next for future Wave
 
 - I will try to connect the DomainName contract to the front end.
