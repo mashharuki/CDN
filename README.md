@@ -85,7 +85,7 @@ There are 3 update points.
 
 - ドメイン発行時の引数の数が変更されたのでそれに伴ってフロントエンド側を更新
 
-  [更新した箇所]()
+  [更新した箇所](https://github.com/mashharuki/CDN/blob/main/packages/nextjs/app/cdn/_components/ServiceCard.tsx#L162-L168)
 
 - NFT マーケットプレイスの画面を追加しました。
 
@@ -97,7 +97,7 @@ There are 3 update points.
 
 - ドメイン発行時に有効期限を指定できるようにフロントエンドを改修しました。
 
-  []()
+  [更新した箇所](https://github.com/mashharuki/CDN/blob/main/packages/nextjs/app/cdn/_components/ServiceCard.tsx#L266-L280)
 
 ### Wave6
 
