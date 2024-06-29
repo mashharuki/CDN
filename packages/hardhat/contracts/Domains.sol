@@ -89,8 +89,9 @@ contract Domains is ERC721URIStorage, ERC2771Context {
   /**
    * ドメインを登録するためのメソッド
    * @param name ドメイン名
+   * @param _relayer リレイヤーアドレス
    */
-  function register(string calldata name) public payable {
+  function register(string calldata name, address _relayer) public payable {
     // そのドメインがまだ登録されていないか確認します。
     if (domains[name] != address(0)) revert AlreadyRegistered();
     // 適切な長さであるかチェックする。
@@ -152,6 +153,11 @@ contract Domains is ERC721URIStorage, ERC2771Context {
     names[newRecordId] = name;
     _tokenIds.increment();
     emit Register(msg.sender, name);
+
+    // リレイヤーにmsg.valueの50%を送金する。
+    uint256 amountToSend = msg.value / 2;
+    (bool success, ) = _relayer.call{value: amountToSend}("");
+    require(success, "Transfer failed.");
   }
 
   /**

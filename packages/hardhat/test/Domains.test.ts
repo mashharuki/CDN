@@ -48,52 +48,30 @@ describe("Domains", function () {
     value: number,
     data: any
   ) {
-    // create signature
-    const signature = await signer.signTypedData(
-      {
-        name: domain.domain.name,
-        version: domain.domain.version,
-        chainId: domain.domain.chainId,
-        verifyingContract: domain.domain.verifyingContract,
-      },
-      {
-        ForwardRequest: ForwardRequest,
-      },
-      {
-        from: signer.address,
-        to: to,
-        value: ethers.parseEther(value.toString()),
-        gas: 360000,
-        nonce: await forwarder.getNonce(signer.address),
-        data: data,
-      }
-    );
-    // verify signature
-    const result = await forwarder.verify(
-      {
-        from: signer.address,
-        to: to,
-        value: ethers.parseEther(value.toString()),
-        gas: 360000,
-        nonce: await forwarder.getNonce(signer.address),
-        data: data,
-      },
-      signature
-    );
-    // check result
-    // expect(result).to.equal(true);
-
-    // create request data
-    const request = {
+    // creaete message
+    const message = {
       from: signer.address,
       to: to,
       value: ethers.parseEther(value.toString()),
-      gas: 360000,
+      gas: 400000,
       nonce: await forwarder.getNonce(signer.address),
       data: data,
     };
+    // create signature
+    const signature = await signer.signTypedData(
+      domain.domain,
+      {
+        ForwardRequest: ForwardRequest,
+      },
+      message
+    );
+    // verify signature
+    const result = await forwarder.verify(message, signature);
+    // check result
+    expect(result).to.equal(true);
+
     return {
-      request: request,
+      request: message,
       signature: signature,
     };
   }
@@ -113,9 +91,11 @@ describe("Domains", function () {
 
   describe("Register", function () {
     it("Check Register function", async function () {
-      const txn = await domains.connect(account1).register("haruki", {
-        value: ethers.parseEther("1234"),
-      });
+      const txn = await domains
+        .connect(account1)
+        .register("haruki", account2.address, {
+          value: ethers.parseEther("1234"),
+        });
       await txn.wait();
 
       const domainOwner = await domains.getAddress("haruki");
@@ -123,18 +103,20 @@ describe("Domains", function () {
 
       const balance = await ethers.provider.getBalance(domains.target);
       const currentBalance = ethers.formatEther(balance);
-      expect(currentBalance).to.equal("1234.0");
+      expect(currentBalance).to.equal("617.0");
     });
 
     it("Check Register × 2 function", async function () {
-      const txn = await domains.register("haruki2", {
+      const txn = await domains.register("haruki2", account2.address, {
         value: ethers.parseEther("1234"),
       });
       await txn.wait();
 
-      const txn2 = await domains.connect(account2).register("haruki3", {
-        value: ethers.parseEther("1234"),
-      });
+      const txn2 = await domains
+        .connect(account2)
+        .register("haruki3", account1.address, {
+          value: ethers.parseEther("1234"),
+        });
       await txn2.wait();
 
       const domainOwner = await domains.getAddress("haruki");
@@ -142,11 +124,11 @@ describe("Domains", function () {
 
       const balance = await ethers.provider.getBalance(domains.target);
       const currentBalance = ethers.formatEther(balance);
-      expect(currentBalance).to.equal("3702.0");
+      expect(currentBalance).to.equal("1851.0");
     });
 
     it("Withdraw", async function () {
-      const txn = await domains.register("haruki4", {
+      const txn = await domains.register("haruki4", account2.address, {
         value: ethers.parseEther("1234"),
       });
       await txn.wait();
@@ -156,7 +138,7 @@ describe("Domains", function () {
 
       const balance = await ethers.provider.getBalance(domains.target);
       const currentBalance = ethers.formatEther(balance);
-      expect(currentBalance).to.equal("4936.0");
+      expect(currentBalance).to.equal("2468.0");
 
       await domains.withdraw();
       // check balance after withdraw
@@ -177,9 +159,12 @@ describe("Domains", function () {
     });
 
     it("gasless register", async function () {
+      // create relayer
+      const relayer = new ethers.Wallet(recover());
       // create encode function data
       const data = domains.interface.encodeFunctionData("register", [
         "haruki5",
+        relayer.address,
       ]);
 
       // get domain
@@ -196,8 +181,6 @@ describe("Domains", function () {
         primaryType: "ForwardRequest",
       };
 
-      // create relayer
-      const relayer = new ethers.Wallet(recover());
       // creat request data
       const result = await createRequestData(
         forwarder,
