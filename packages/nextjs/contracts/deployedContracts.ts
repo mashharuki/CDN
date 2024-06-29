@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   5555: {
     Domains: {
-      address: "0xF09d5a398239b32071c33945bFcdA29BCb0B842A",
+      address: "0xCa2d4842FB28190D0b68A5F620232685A2436CDe",
       abi: [
         {
           inputs: [
@@ -19,6 +19,11 @@ const deployedContracts = {
             {
               internalType: "address",
               name: "_trustedForwarder",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "_marketplaceAddress",
               type: "address",
             },
           ],
@@ -121,11 +126,81 @@ const deployedContracts = {
             {
               indexed: false,
               internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "DomainExpired",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "DomainTransferred",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "FallbackReceived",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "uint256",
               name: "_tokenId",
               type: "uint256",
             },
           ],
           name: "MetadataUpdate",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "Received",
           type: "event",
         },
         {
@@ -198,6 +273,10 @@ const deployedContracts = {
           type: "event",
         },
         {
+          stateMutability: "payable",
+          type: "fallback",
+        },
+        {
           inputs: [
             {
               internalType: "address",
@@ -237,6 +316,19 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "checkExpiration",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
               internalType: "string",
               name: "_name",
               type: "string",
@@ -267,6 +359,25 @@ const deployedContracts = {
               internalType: "address",
               name: "",
               type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "expirationDates",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
             },
           ],
           stateMutability: "view",
@@ -318,6 +429,25 @@ const deployedContracts = {
               internalType: "address",
               name: "",
               type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_owner",
+              type: "address",
+            },
+          ],
+          name: "getDomainsByOwner",
+          outputs: [
+            {
+              internalType: "string[]",
+              name: "",
+              type: "string[]",
             },
           ],
           stateMutability: "view",
@@ -400,6 +530,19 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "marketplaceAddress",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "name",
           outputs: [
             {
@@ -446,6 +589,30 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "ownerDomains",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
               internalType: "uint256",
               name: "tokenId",
               type: "uint256",
@@ -468,6 +635,11 @@ const deployedContracts = {
               internalType: "string",
               name: "name",
               type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "_years",
+              type: "uint256",
             },
           ],
           name: "price",
@@ -506,6 +678,11 @@ const deployedContracts = {
               internalType: "string",
               name: "name",
               type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "_years",
+              type: "uint256",
             },
           ],
           name: "register",
@@ -688,11 +865,43 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "address",
+              name: "_address",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "_tokenId",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_years",
+              type: "uint256",
+            },
+          ],
+          name: "updateAddress",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
           inputs: [],
           name: "withdraw",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
         },
       ],
       inheritedFunctions: {
@@ -720,6 +929,319 @@ const deployedContracts = {
         transferFrom:
           "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
         isTrustedForwarder: "@openzeppelin/contracts/metatx/ERC2771Context.sol",
+      },
+    },
+    NFTMarketplace: {
+      address: "0xd18d0D5c3C8f915865069Fe11b25228a737E9925",
+      abi: [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "seller",
+              type: "address",
+            },
+          ],
+          name: "Canceled",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "FallbackReceived",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "seller",
+              type: "address",
+            },
+          ],
+          name: "Listed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "previousOwner",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "OwnershipTransferred",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "Received",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "buyer",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "price",
+              type: "uint256",
+            },
+          ],
+          name: "Sold",
+          type: "event",
+        },
+        {
+          stateMutability: "payable",
+          type: "fallback",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "duration",
+              type: "uint256",
+            },
+          ],
+          name: "buyItem",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "cancelListing",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "domainsContractAddress",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "getListing",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "tokenId",
+                  type: "uint256",
+                },
+                {
+                  internalType: "address",
+                  name: "seller",
+                  type: "address",
+                },
+              ],
+              internalType: "struct NFTMarketplace.Listing",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "listItem",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "listings",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "seller",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "renounceOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_domainsContractAddress",
+              type: "address",
+            },
+          ],
+          name: "setDomainsContract",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "transferOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
+      ],
+      inheritedFunctions: {
+        owner: "@openzeppelin/contracts/access/Ownable.sol",
+        renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
+        transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
       },
     },
     SampleForwarder: {

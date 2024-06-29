@@ -241,6 +241,29 @@ describe("Domains", function () {
       expect(currentBalance).to.equal("0.02");
     });
 
+    it("get DomainsByOwner after Register × 2 function", async function () {
+      const {domains, account1} = await deployContract();
+      // priceを取得
+      const price = await domains.price("haruki2", 2);
+      const txn = await domains.register("haruki2", 2, {
+        value: ethers.parseEther(await ethers.formatEther(price)),
+      });
+      await txn.wait();
+
+      // priceを取得
+      const price2 = await domains.price("haruki3", 2);
+      const txn2 = await domains.register("haruki3", 2, {
+        value: ethers.parseEther(await ethers.formatEther(price2)),
+      });
+      await txn2.wait();
+
+      // get Domains By Owner
+      const domainsByOwner = await domains.getDomainsByOwner(account1.address);
+      expect(domainsByOwner.length).to.equal(2);
+      expect(domainsByOwner[0]).to.equal("haruki2");
+      expect(domainsByOwner[1]).to.equal("haruki3");
+    });
+
     it("Withdraw", async function () {
       const {domains, account1} = await deployContract();
       // priceを取得

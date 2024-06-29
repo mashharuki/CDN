@@ -24,6 +24,9 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
   event Received(address indexed sender, uint256 amount);
   event FallbackReceived(address indexed sender, uint256 amount);
 
+  /**
+   * コンストラクター
+   */
   constructor() {}
 
   /**

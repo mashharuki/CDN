@@ -58,14 +58,56 @@ There are 3 update points.
 
 - Updated Domains Contract (NFT)
 
+- DNS の所有に有効期限を付与(有効期限が過ぎたら自動的に burn)
+
+  [Domains.sol に追加したロジック](https://github.com/mashharuki/CDN/blob/main/packages/hardhat/contracts/Domains.sol#L278-L334)
+
 ### Wave5
 
 - 所有している DNS の一覧取得機能の追加
-- DNS の所有に有効期限を付与(有効期限が過ぎたら自動的に burn)
+
+  [Domainx.xol に追加したロジック](https://github.com/mashharuki/CDN/blob/main/packages/hardhat/contracts/Domains.sol#L269-L273)
+
+- Wave4 及び Wave5 でロジックを追加したスマートコントラクトをテストネットにデプロイ
+
+  ```bash
+  ===================================== [START] =====================================
+  reusing "SampleForwarder" at 0xacff3BF500e0E9F7734D39064B290873d80Fe749
+  reusing "NFTMarketplace" at 0xd18d0D5c3C8f915865069Fe11b25228a737E9925
+  NFTMarketplace Contract is deployed: 0xd18d0D5c3C8f915865069Fe11b25228a737E9925
+  reusing "Domains" at 0xCa2d4842FB28190D0b68A5F620232685A2436CDe
+  Domains Contract is deployed: 0xCa2d4842FB28190D0b68A5F620232685A2436CDe
+  ===================================== [set Domains address START] =====================================
+  setDomainsAddress txn hash: 0x27b15f6cd15a94571c26b4c38594bf53c311658c7fa44dd3b7422527ea768aa1
+  ===================================== [set Domains address END] =====================================
+  ===================================== [END] =====================================
+  ```
+
+- ドメイン発行時の引数の数が変更されたのでそれに伴ってフロントエンド側を更新
+
+  [更新した箇所]()
+
+- NFT マーケットプレイスの画面を追加
+
+  [追加したコード]()
+
+- スマートコントラクトのテストコードを更新(NFT マーケットプレイスコントラクトと追加したロジック用のテストコードを追加)
+
+  [Domains.test.ts](https://github.com/mashharuki/CDN/blob/main/packages/hardhat/test/Domains.test.ts)
 
 ### Wave6
 
+- メタトランザクション機能をフロントエンド側に実装する。
+
 ### Wave7
+
+- ドメインの有効期限が切れているかどうかチェックする機能をフロントエンド側から呼び出せるようにする。
+
+### Wave8
+
+### Wave9
+
+### Wave10
 
 ## What's next for future Wave
 

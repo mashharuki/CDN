@@ -28,9 +28,27 @@ const deployDomainsContract: DeployFunction = async function (
 
   const tld = "xcr";
 
+  // deploy NFTMarketplace contract
+  await deploy("NFTMarketplace", {
+    from: deployer,
+    args: [],
+    log: true,
+    autoMine: true,
+  });
+
+  // get NFTMarket contract
+  const marketPlace = await hre.ethers.getContract<Contract>(
+    "NFTMarketplace",
+    deployer
+  );
+
+  console.log(
+    `NFTMarketplace Contract is deployed: ${await marketPlace.getAddress()}`
+  );
+
   await deploy("Domains", {
     from: deployer,
-    args: [tld, await forwarder.getAddress()],
+    args: [tld, await forwarder.getAddress(), await marketPlace.getAddress()],
     log: true,
     autoMine: true,
   });
@@ -39,6 +57,19 @@ const deployDomainsContract: DeployFunction = async function (
   const domains = await hre.ethers.getContract<Contract>("Domains", deployer);
 
   console.log(`Domains Contract is deployed: ${await domains.getAddress()}`);
+
+  console.log(
+    `===================================== [set Domains address START] =====================================`
+  );
+
+  const txn = await marketPlace.setDomainsContract(await domains.getAddress());
+  await txn.wait();
+
+  console.log(`setDomainsAddress txn hash: ${txn.hash}`);
+
+  console.log(
+    `===================================== [set Domains address END] =====================================`
+  );
 
   // write Contract Address
   writeContractAddress({
@@ -52,6 +83,13 @@ const deployDomainsContract: DeployFunction = async function (
     group: "contracts",
     name: "SampleForwarder",
     value: await forwarder.getAddress(),
+    network: hre.network.name,
+  });
+
+  writeContractAddress({
+    group: "contracts",
+    name: "NFTMarketplace",
+    value: await marketPlace.getAddress(),
     network: hre.network.name,
   });
 
