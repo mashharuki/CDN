@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Contract, ethers } from "ethers";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,6 +9,7 @@ import { useAccount, useReadContract, useSignTypedData, useWriteContract } from 
 import Loading from "~~/components/Loading";
 import { useEthersSigner } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
+import { RELAYER_ADDRESS } from "~~/utils/constants";
 import { ForwardRequest } from "~~/utils/types";
 
 type ContractUIProps = {
@@ -23,6 +24,8 @@ type ContractUIProps = {
 export const ServiceCard = ({ deployedContractData, SampleForwarderContractData }: ContractUIProps) => {
   const [domain, setDomain] = useState<string>();
   const [price, setPrice] = useState<any>();
+  const [isAvailable, setIsAvailable] = useState<boolean>(false);
+  const [years, setYears] = useState(1);
   const { targetNetwork } = useTargetNetwork();
   const { signTypedDataAsync } = useSignTypedData();
   const { address } = useAccount();
@@ -44,7 +47,7 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
     address: deployedContractData.address,
     functionName: "price",
     abi: deployedContractData.abi,
-    args: [domain as any],
+    args: [domain as any, years],
     chainId: targetNetwork.id,
     query: {
       enabled: true,
@@ -70,10 +73,8 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
   const checkRegistered = async () => {
     await refetch();
     console.log("data:", data);
-    await getPrice();
-    console.log("price:", domainPrice);
-    setPrice(domainPrice as any);
     if (data) {
+      setIsAvailable(true);
       toast.info(`This domain is available`, {
         position: "top-right",
         autoClose: 5000,
@@ -85,6 +86,7 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
         theme: "colored",
       });
     } else {
+      setIsAvailable(false);
       toast.info(`This domain is available`, {
         position: "top-right",
         autoClose: 5000,
@@ -108,8 +110,6 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
       console.log("address:", address);
       console.log("deployedContractData.address:", deployedContractData.address);
       console.log("nonce:", nonce);
-      console.log("price:", price);
-      console.log("price:", ethers.formatEther(price.toString()));
 
       // create Contract object
       const domains: any = new Contract(deployedContractData.address, deployedContractData.abi, signer) as any;
@@ -121,7 +121,7 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
       // get domain
       const domainData = await forwarder.eip712Domain();
       // generate encoded data
-      const data = domains.interface.encodeFunctionData("register", [domain]);
+      const data = domains.interface.encodeFunctionData("register", [domain, RELAYER_ADDRESS]);
       // genearte signature
       const signature = await signTypedDataAsync({
         domain: {
@@ -163,26 +163,26 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
         address: deployedContractData.address,
         functionName: "register",
         abi: deployedContractData.abi,
-        args: [domain as any],
+        args: [domain as any, years],
         chainId: targetNetwork.id,
         value: BigInt(Number(price)),
 
         /*
         // request forward request
-      await fetch("/api/requestRelayer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: address,
-          to: deployedContractData.address,
-          value: price,
-          gas: 400000,
-          nonce: (nonce as any).toString(),
-          data: data,
-          signature: signature,
-        }),
+        await fetch("/api/requestRelayer", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: address,
+            to: deployedContractData.address,
+            value: price,
+            gas: 400000,
+            nonce: (nonce as any).toString(),
+            data: data,
+            signature: signature,
+          }),
         */
       }).then(async () => {
         // console.log("gasless result:", await result.json());
@@ -212,6 +212,33 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
     }
   };
 
+  /**
+   * 有効期限を1年増やす
+   */
+  const increaseYears = async () => {
+    if (years < 5) {
+      setYears(years + 1);
+    }
+  };
+
+  /**
+   * 有効期限を1年減らす
+   */
+  const decreaseYears = async () => {
+    if (years > 1) {
+      setYears(years - 1);
+    }
+  };
+
+  useEffect(() => {
+    const updatePrict = async () => {
+      await getPrice();
+      console.log("price:", domainPrice);
+      setPrice(domainPrice);
+    };
+    updatePrict();
+  }, [years]);
+
   return (
     <>
       {isPending ? (
@@ -236,6 +263,21 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
                       Check
                     </button>
                   </div>
+                  {isAvailable && (
+                    <>
+                      <div className="flex items-center justify-center mt-5">
+                        <button className="btn" onClick={decreaseYears} disabled={years <= 1}>
+                          -
+                        </button>
+                        <span className="mx-4 text-black">
+                          {years} Year{years > 1 ? "s" : ""}
+                        </span>
+                        <button className="btn" onClick={increaseYears} disabled={years >= 5}>
+                          +
+                        </button>
+                      </div>
+                    </>
+                  )}
                   {price != undefined && (
                     <>
                       <div className="mt-6 font-semibold leading-none tracking-tighter text-neutral-600">

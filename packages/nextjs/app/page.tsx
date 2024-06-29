@@ -16,7 +16,7 @@ const Home: NextPage = () => {
   const contractNames = Object.keys(contractsData) as ContractName[];
 
   const { data: deployedContractData } = useDeployedContractInfo(contractNames[0]);
-  const { data: SampleForwarderContractData } = useDeployedContractInfo(contractNames[1]);
+  const { data: SampleForwarderContractData } = useDeployedContractInfo(contractNames[2]);
 
   return (
     <>
