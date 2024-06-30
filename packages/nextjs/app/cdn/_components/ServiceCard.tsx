@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Contract, ethers } from "ethers";
+import { Contract } from "ethers";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { formatEther } from "viem";

@@ -142,10 +142,16 @@ describe("Domains", function () {
       const txn2 = await domains.connect(account1).checkExpiration(0);
       await txn2.wait();
 
-      // イベントがハッカしているか確認
+      // イベントが発火しているか確認
       await expect(txn2)
         .to.emit(marketplace, "Listed")
         .withArgs(0, domains.target);
+
+      // リストされているドメインを取得する。
+      const listedDomain = await marketplace.listings(0);
+
+      expect(listedDomain[0]).to.equal(0);
+      expect(listedDomain[1]).to.equal(domains.target);
 
       await marketplace.connect(account2).buyItem(0, "domain", 1, {
         value: ethers.parseEther("0.01"),
