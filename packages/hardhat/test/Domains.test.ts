@@ -148,10 +148,10 @@ describe("Domains", function () {
         .withArgs(0, domains.target);
 
       // リストされているドメインを取得する。
-      const listedDomain = await marketplace.listings(0);
+      const listedDomain = marketplace.listings(0);
 
-      expect(listedDomain[0]).to.equal(0);
-      expect(listedDomain[1]).to.equal(domains.target);
+      expect((await listedDomain).tokenId).to.equal(0);
+      expect((await listedDomain).seller).to.equal(domains.target);
 
       await marketplace.connect(account2).buyItem(0, "domain", 1, {
         value: ethers.parseEther("0.01"),
