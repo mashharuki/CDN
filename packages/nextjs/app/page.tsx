@@ -25,7 +25,7 @@ const Home: NextPage = () => {
           <h1 className="text-center">
             <span className="block text-4xl font-bold">CrossValueChain Domain Name Service Page</span>
           </h1>
-          {deployedContractData != undefined && (
+          {deployedContractData != undefined && SampleForwarderContractData != undefined && (
             <ServiceCard
               key={contractNames[0].toString()}
               deployedContractData={deployedContractData}

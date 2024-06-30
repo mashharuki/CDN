@@ -153,9 +153,21 @@ describe("Domains", function () {
       expect((await listedDomain).tokenId).to.equal(0);
       expect((await listedDomain).seller).to.equal(domains.target);
 
+      // リストされているドメインを一覧で取得する。
+      const allListings = await marketplace.getAllListings();
+      // 一覧で取得したデータの中身をチェックする。
+      expect(allListings.length).to.equal(1);
+      expect(allListings[0][0]).to.equal(0);
+      expect(allListings[0][1]).to.equal(domains.target);
+
       await marketplace.connect(account2).buyItem(0, "domain", 1, {
         value: ethers.parseEther("0.01"),
       });
+
+      // リストされているドメインが一件もないことを確認する。
+      const allListings2 = await marketplace.getAllListings();
+      // 一覧で取得したデータの中身をチェックする。
+      expect(allListings2.length).to.equal(0);
 
       const domainOwner = await domains.domains("domain");
       expect(domainOwner).to.equal(account2.address);

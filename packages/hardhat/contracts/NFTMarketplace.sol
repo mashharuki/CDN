@@ -17,6 +17,7 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
 
   address public domainsContractAddress;
   mapping(uint256 => Listing) public listings;
+  uint256[] public listedTokenIds;
 
   event Listed(uint256 indexed tokenId, address indexed seller);
   event Canceled(uint256 indexed tokenId, address indexed seller);
@@ -50,6 +51,7 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
     );
 
     listings[tokenId] = Listing({tokenId: tokenId, seller: msg.sender});
+    listedTokenIds.push(tokenId);
 
     emit Listed(tokenId, msg.sender);
   }
@@ -94,6 +96,7 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
 
     // リストから削除
     delete listings[tokenId];
+    removeTokenId(tokenId);
 
     emit Sold(tokenId, msg.sender, totalPrice);
   }
@@ -108,6 +111,7 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
 
     // リストから削除
     delete listings[tokenId];
+    removeTokenId(tokenId);
 
     emit Canceled(tokenId, msg.sender);
   }
@@ -127,6 +131,30 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
    */
   function getListing(uint256 tokenId) external view returns (Listing memory) {
     return listings[tokenId];
+  }
+
+  /**
+   * 全てのリスト情報を取得するためのメソッド
+   */
+  function getAllListings() external view returns (Listing[] memory) {
+    Listing[] memory allListings = new Listing[](listedTokenIds.length);
+    for (uint256 i = 0; i < listedTokenIds.length; i++) {
+      allListings[i] = listings[listedTokenIds[i]];
+    }
+    return allListings;
+  }
+
+  /**
+   * listings 一覧から指定したトークンIDのデータを削除するメソッド
+   */
+  function removeTokenId(uint256 tokenId) internal {
+    for (uint256 i = 0; i < listedTokenIds.length; i++) {
+      if (listedTokenIds[i] == tokenId) {
+        listedTokenIds[i] = listedTokenIds[listedTokenIds.length - 1];
+        listedTokenIds.pop();
+        break;
+      }
+    }
   }
 
   receive() external payable {
