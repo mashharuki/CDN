@@ -26,7 +26,7 @@ const MintCDHModal = (props: ModalProps) => {
   const contractsData = getAllContracts();
   const contractNames = Object.keys(contractsData) as ContractName[];
   // get contractData
-  const { data: deployedContractData }: any = useDeployedContractInfo(contractNames[3]);
+  const { data: deployedContractData }: any = useDeployedContractInfo(contractNames[4]);
 
   /**
    * mintCDH

@@ -19,12 +19,8 @@ const Domains: NextPage = () => {
   const contractNames = Object.keys(contractsData) as ContractName[];
 
   // get contractData
-  const { data: cdhContractData } = useDeployedContractInfo(contractNames[3]);
+  const { data: cdhContractData } = useDeployedContractInfo(contractNames[4]);
   const { data: deployedContractData } = useDeployedContractInfo(contractNames[0]);
-
-  console.log("contractNames[2]", contractNames);
-  console.log("cdhContractData", cdhContractData);
-  console.log("deployedContractData", deployedContractData);
 
   /**
    * プルダウンで選択した時に変更する。

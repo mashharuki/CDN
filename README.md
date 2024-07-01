@@ -89,7 +89,7 @@ There are 3 update points.
 
 - NFT マーケットプレイスの画面を追加しました。
 
-  [追加したコード]()
+  [追加したコード](https://github.com/mashharuki/CDN/blob/main/packages/nextjs/app/market/page.tsx)
 
 - スマートコントラクトのテストコードを更新しました。(NFT マーケットプレイスコントラクトと追加したロジック用のテストコードを追加しました。)
 

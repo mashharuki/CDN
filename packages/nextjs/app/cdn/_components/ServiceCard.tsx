@@ -231,12 +231,12 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
   };
 
   useEffect(() => {
-    const updatePrict = async () => {
+    const updatePrice = async () => {
       await getPrice();
       console.log("price:", domainPrice);
       setPrice(domainPrice);
     };
-    updatePrict();
+    updatePrice();
   }, [years]);
 
   return (
