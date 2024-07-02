@@ -66,7 +66,7 @@ There are 3 update points.
 
 - 所有している DNS の一覧取得機能の追加
 
-  [Domainx.xol に追加したロジック](https://github.com/mashharuki/CDN/blob/main/packages/hardhat/contracts/Domains.sol#L269-L273)
+  [Domains.sol に追加したロジック](https://github.com/mashharuki/CDN/blob/main/packages/hardhat/contracts/Domains.sol#L269-L273)
 
 - Wave4 及び Wave5 でロジックを追加したスマートコントラクトをテストネットにデプロイ
 
@@ -103,6 +103,7 @@ There are 3 update points.
 
 - ドメインを発行した時に支払った NativeToken の半分を Relayer に送金するロジックを追加する。
 - メタトランザクション機能をフロントエンド側に実装する。
+- リブランディングに伴う名称変更
 
 ### Wave7
 
