@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { MarketCard } from "./MarketCard";
 import "react-toastify/dist/ReactToastify.css";
 import { useReadContract } from "wagmi";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
@@ -14,7 +15,7 @@ type ContractUIProps = {
  * MarketCards Components
  * @returns
  */
-export const MarketCards = ({ nftMarketContractData }: ContractUIProps) => {
+export const MarketCards = ({ nftMarketContractData, deployedContractData }: ContractUIProps) => {
   const { targetNetwork } = useTargetNetwork();
 
   const { data: listings, refetch } = useReadContract({
@@ -38,7 +39,11 @@ export const MarketCards = ({ nftMarketContractData }: ContractUIProps) => {
         {listings.map((listing: any, index: number) => {
           return (
             <div className="" key={index}>
-              test
+              <MarketCard
+                nftMarketContractData={nftMarketContractData}
+                deployedContractData={deployedContractData}
+                listing={listing}
+              />
             </div>
           );
         })}
