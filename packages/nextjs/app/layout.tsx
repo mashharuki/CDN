@@ -9,8 +9,8 @@ const baseUrl = process.env.VERCEL_URL
   : `http://localhost:${process.env.PORT || 3000}`;
 const imageUrl = `${baseUrl}/thumbnail.jpg`;
 
-const title = "CrossValueChain Domain Name Service";
-const titleTemplate = "%s | CrossValueChain Domain Name Service";
+const title = "Xenea Domain Name Service";
+const titleTemplate = "%s | Xenea Domain Name Service";
 const description = "Built with 🏗 Scaffold-ETH 2";
 
 export const metadata: Metadata = {

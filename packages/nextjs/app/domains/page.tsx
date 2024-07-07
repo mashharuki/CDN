@@ -21,6 +21,7 @@ const Domains: NextPage = () => {
   // get contractData
   const { data: cdhContractData } = useDeployedContractInfo(contractNames[4]);
   const { data: deployedContractData } = useDeployedContractInfo(contractNames[0]);
+  const { data: nftMarketContractData } = useDeployedContractInfo(contractNames[1]);
 
   /**
    * プルダウンで選択した時に変更する。
@@ -52,6 +53,7 @@ const Domains: NextPage = () => {
             <DomainCards
               deployedContractData={deployedContractData}
               cdhContractData={cdhContractData}
+              nftMarketContractData={nftMarketContractData}
               filter={filter}
             />
           </div>

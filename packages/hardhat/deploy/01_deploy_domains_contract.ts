@@ -26,7 +26,7 @@ const deployDomainsContract: DeployFunction = async function (
     deployer
   );
 
-  const tld = "xcr";
+  const tld = "xene";
 
   // deploy NFTMarketplace contract
   await deploy("NFTMarketplace", {

@@ -1,6 +1,8 @@
 import {HardhatEthersSigner} from "@nomicfoundation/hardhat-ethers/signers";
+import {time} from "@nomicfoundation/hardhat-network-helpers";
 import {expect} from "chai";
 import {ethers} from "hardhat";
+import {ForwardRequest} from "../lib/types";
 import {
   Domains,
   NFTMarketplace,
@@ -8,8 +10,6 @@ import {
   SampleForwarder,
   SampleForwarder__factory,
 } from "../typechain-types";
-import {ForwardRequest} from "../lib/types";
-import {time} from "@nomicfoundation/hardhat-network-helpers";
 
 describe("Domains", function () {
   // We define a fixture to reuse the same setup in every test.
@@ -46,6 +46,21 @@ describe("Domains", function () {
 
     return {domains, forwarder, marketplace, account1, account2};
   }
+
+  /**
+   * タイプスタンプをyyyy/mm/dd形式に変換するメソッド
+   */
+  const formatUnixTimestampBigInt = (timestamp: bigint): string => {
+    // Unix タイムスタンプをミリ秒に変換
+    const milliseconds = Number(timestamp) * 1000;
+    const date = new Date(milliseconds);
+
+    const year = date.getFullYear();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2); // 月は0から始まるので +1
+    const day = ("0" + date.getDate()).slice(-2);
+
+    return `${year}/${month}/${day}`;
+  };
 
   /**
    * create Request data
@@ -116,6 +131,10 @@ describe("Domains", function () {
         value: ethers.parseEther(await ethers.formatEther(price)),
       });
       await txn.wait();
+
+      // 有効期限を取得する。
+      const expirationDate = await domains.expirationDates(0);
+      console.log("expirationDate:", formatUnixTimestampBigInt(expirationDate));
 
       // 1年経過させる。
       await time.increase(365 * 24 * 60 * 60 + 1);
@@ -341,7 +360,12 @@ describe("Domains", function () {
       ]);
 
       // get domain
-      const domain = await forwarder.eip712Domain();
+      const domain = {
+        name: "MinimalForwarder",
+        version: "0.0.1",
+        chainId: 31337,
+        verifyingContract: domains.target,
+      };
       // get price
       const price = await domains.price("haruki5", 2);
 

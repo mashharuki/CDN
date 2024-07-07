@@ -9,6 +9,7 @@ import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 type ContractUIProps = {
   deployedContractData?: any;
   cdhContractData?: any;
+  nftMarketContractData?: any;
   filter: string;
 };
 
@@ -16,7 +17,12 @@ type ContractUIProps = {
  * DomainCards Components
  * @returns
  */
-export const DomainCards = ({ deployedContractData, cdhContractData, filter }: ContractUIProps) => {
+export const DomainCards = ({
+  deployedContractData,
+  cdhContractData,
+  nftMarketContractData,
+  filter,
+}: ContractUIProps) => {
   const { targetNetwork } = useTargetNetwork();
 
   const { data: names, refetch } = useReadContract({
@@ -45,6 +51,7 @@ export const DomainCards = ({ deployedContractData, cdhContractData, filter }: C
                 name={name}
                 deployedContractData={deployedContractData}
                 cdhContractData={cdhContractData}
+                nftMarketContractData={nftMarketContractData}
                 filter={filter}
               />
             </div>

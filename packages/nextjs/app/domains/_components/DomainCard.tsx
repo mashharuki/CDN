@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
-import { useAccount, useReadContract } from "wagmi";
+import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import MintCDHModal from "~~/components/MintCDHModal";
 import Modal from "~~/components/Modal";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
+import { formatUnixTimestampBigInt } from "~~/utils/helper";
 import { getBlockExplorerAddressLink, getBlockExplorerTokenLink } from "~~/utils/scaffold-eth";
 
 type DomainCardPorps = {
@@ -14,6 +15,7 @@ type DomainCardPorps = {
   name: string;
   cdhContractData?: any;
   deployedContractData?: any;
+  nftMarketContractData?: any;
   filter: string;
 };
 
@@ -24,7 +26,9 @@ type DomainCardPorps = {
 export const DomainCard = (porps: DomainCardPorps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMintCDHOpen, setIsMintCDHOpen] = useState(false);
+  const [expirationDate, setExpirationDate] = useState("");
 
+  const {} = useWriteContract();
   const { targetNetwork } = useTargetNetwork();
   const { address } = useAccount();
 
@@ -66,6 +70,18 @@ export const DomainCard = (porps: DomainCardPorps) => {
       retry: false,
     },
   });
+  // get expirationDate
+  const { data: expirationDateBigInt, refetch: getExpirationDate } = useReadContract({
+    address: porps.deployedContractData.address,
+    functionName: "expirationDates",
+    abi: porps.deployedContractData.abi,
+    args: [porps.id],
+    chainId: targetNetwork.id,
+    query: {
+      enabled: false,
+      retry: false,
+    },
+  });
   // get CDH's balance
   const { data: balance, refetch: getBalance } = useReadContract({
     address: porps.cdhContractData.address,
@@ -82,26 +98,72 @@ export const DomainCard = (porps: DomainCardPorps) => {
   /**
    * format address
    */
-  function formatDisplayAddress(str: string): string {
+  const formatDisplayAddress = (str: string): string => {
     if (str.length < 6) return "Invalid string";
     const firstThree = str.slice(2, 5);
     const lastThree = str.slice(-3);
     return firstThree + "..." + lastThree;
-  }
+  };
+
+  /**
+   * listItem method
+  const listItem = async () => {
+    try {
+      const result = await writeContractAsync({
+        address: porps.nftMarketContractData.address,
+        functionName: "listItem",
+        abi: porps.nftMarketContractData.abi,
+        args: [porps.id],
+      });
+
+      console.log("result:", result);
+
+      toast.success("🦄 Success!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } catch (err: any) {
+      console.error("err:", err);
+      toast.error("Failed....", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
+  */
 
   useEffect(() => {
     const init = async () => {
       await getRecord();
       await getOwner();
       await getTokenUri();
+      await getExpirationDate();
       await getBalance();
       console.log("owner:", owner);
       console.log("record:", record);
       console.log("tokenUri:", tokenUri);
       console.log("balance:", balance);
+      console.log("expirationDateBigInt:", expirationDateBigInt);
     };
     init();
   }, []);
+
+  useEffect(() => {
+    const YYYYMMDD_expirationDate = formatUnixTimestampBigInt(expirationDateBigInt as any);
+    setExpirationDate(YYYYMMDD_expirationDate);
+  }, [expirationDateBigInt]);
 
   if (porps.filter == "myDomains") {
     return (
@@ -150,6 +212,9 @@ export const DomainCard = (porps: DomainCardPorps) => {
                         record: {record as any}
                       </a>
                     </p>
+                    <p>
+                      <strong>expirationDate: {expirationDate}</strong>
+                    </p>
                   </div>
                   {balance != undefined && (
                     <>
@@ -179,6 +244,16 @@ export const DomainCard = (porps: DomainCardPorps) => {
                   >
                     <PencilIcon className="h-5 w-5" />
                   </button>
+                  {/*
+                  <div>
+                    <button
+                      onClick={listItem}
+                      className="bottom-4 right-3 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors"
+                    >
+                      <ShoppingCartIcon className="h-5 w-5" />
+                    </button>
+                  </div>
+                  */}
                 </div>
               </div>
             ) : (
@@ -235,6 +310,9 @@ export const DomainCard = (porps: DomainCardPorps) => {
                   {record as any}
                 </a>
               </p>
+              <p>
+                <strong>expirationDate: {expirationDate}</strong>
+              </p>
             </div>
             {owner == address && (
               <>
@@ -266,6 +344,16 @@ export const DomainCard = (porps: DomainCardPorps) => {
                 >
                   <PencilIcon className="h-5 w-5" />
                 </button>
+                {/*
+                <div>
+                  <button
+                    onClick={listItem}
+                    className="bottom-4 right-3 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors"
+                  >
+                    <ShoppingCartIcon className="h-5 w-5" />
+                  </button>
+                </div>
+                */}
               </>
             )}
           </div>

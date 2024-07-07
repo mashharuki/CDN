@@ -74,7 +74,7 @@ contract Domains is ERC721URIStorage, ERC2771Context {
     address _marketplaceAddress
   )
     payable
-    ERC721("CrossValueChain Domain Name Service", "CDN")
+    ERC721("Xenea Domain Name Service", "XDN")
     ERC2771Context(_trustedForwarder)
   {
     // owner addressを設定する。

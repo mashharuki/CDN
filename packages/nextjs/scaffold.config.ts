@@ -9,11 +9,11 @@ export type ScaffoldConfig = {
 };
 
 /**
- * CrossValueChain testnet config
+ * Xenea testnet config
  */
-export const crossValueChainTestnet: chains.Chain = {
+export const xeneaTestnet: chains.Chain = {
   id: 5555,
-  name: "CrossValueChainTestnet",
+  name: "Xenea Testnet",
   nativeCurrency: {
     decimals: 18,
     name: "XCR",
@@ -24,7 +24,7 @@ export const crossValueChainTestnet: chains.Chain = {
   },
   blockExplorers: {
     default: {
-      name: "CrossValueScan",
+      name: "XeneaScan",
       url: "https://testnet.crossvaluescan.com/",
     },
   },
@@ -34,7 +34,7 @@ chains.arbitrum;
 
 const scaffoldConfig = {
   // The networks on which your DApp is live
-  targetNetworks: [crossValueChainTestnet],
+  targetNetworks: [xeneaTestnet],
   pollingInterval: 30000,
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!,
   walletConnectProjectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!,
