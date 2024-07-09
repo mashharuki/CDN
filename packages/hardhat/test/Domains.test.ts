@@ -151,9 +151,11 @@ describe("Domains", function () {
     it("Should emit Domain Transfer event", async function () {
       const {domains, marketplace, account1} = await deployContract();
       const price = await domains.price("domain", 1);
-      const txn = await domains.connect(account1).register("domain", 1, {
-        value: ethers.parseEther(await ethers.formatEther(price)),
-      });
+      const txn = await domains
+        .connect(account1)
+        .register(account1.address, "domain", 1, {
+          value: ethers.parseEther(await ethers.formatEther(price)),
+        });
       await txn.wait();
 
       // 有効期限を取得する。
@@ -174,9 +176,11 @@ describe("Domains", function () {
     it("Should list and buy domain successfully", async function () {
       const {domains, marketplace, account1, account2} = await deployContract();
       const price = await domains.price("domain", 1);
-      const txn = await domains.connect(account1).register("domain", 1, {
-        value: ethers.parseEther(await ethers.formatEther(price)),
-      });
+      const txn = await domains
+        .connect(account1)
+        .register(account1.address, "domain", 1, {
+          value: ethers.parseEther(await ethers.formatEther(price)),
+        });
       await txn.wait();
 
       // 1年経過させる。
@@ -219,9 +223,11 @@ describe("Domains", function () {
     it("Should emit BuyItem event", async function () {
       const {domains, marketplace, account1, account2} = await deployContract();
       const price = await domains.price("sample", 1);
-      const txn = await domains.connect(account1).register("sample", 1, {
-        value: ethers.parseEther(await ethers.formatEther(price)),
-      });
+      const txn = await domains
+        .connect(account1)
+        .register(account1.address, "sample", 1, {
+          value: ethers.parseEther(await ethers.formatEther(price)),
+        });
       await txn.wait();
 
       // 1年経過させる。
@@ -265,9 +271,11 @@ describe("Domains", function () {
       const {domains, account1} = await deployContract();
       // priceを取得
       const price = await domains.price("haruki", 2);
-      const txn = await domains.connect(account1).register("haruki", 2, {
-        value: ethers.parseEther(await ethers.formatEther(price)),
-      });
+      const txn = await domains
+        .connect(account1)
+        .register(account1.address, "haruki", 2, {
+          value: ethers.parseEther(await ethers.formatEther(price)),
+        });
       await txn.wait();
 
       const domainOwner = await domains.domains("haruki");
@@ -279,19 +287,21 @@ describe("Domains", function () {
     });
 
     it("Check Register × 2 function", async function () {
-      const {domains, account2} = await deployContract();
+      const {domains, account1, account2} = await deployContract();
       // priceを取得
       const price = await domains.price("haruki2", 2);
-      const txn = await domains.register("haruki2", 2, {
+      const txn = await domains.register(account1.address, "haruki2", 2, {
         value: ethers.parseEther(await ethers.formatEther(price)),
       });
       await txn.wait();
 
       // priceを取得
       const price2 = await domains.price("haruki3", 2);
-      const txn2 = await domains.connect(account2).register("haruki3", 2, {
-        value: ethers.parseEther(await ethers.formatEther(price2)),
-      });
+      const txn2 = await domains
+        .connect(account2)
+        .register(account2.address, "haruki3", 2, {
+          value: ethers.parseEther(await ethers.formatEther(price2)),
+        });
       await txn2.wait();
 
       const domainOwner = await domains.domains("haruki3");
@@ -306,14 +316,14 @@ describe("Domains", function () {
       const {domains, account1} = await deployContract();
       // priceを取得
       const price = await domains.price("haruki2", 2);
-      const txn = await domains.register("haruki2", 2, {
+      const txn = await domains.register(account1.address, "haruki2", 2, {
         value: ethers.parseEther(await ethers.formatEther(price)),
       });
       await txn.wait();
 
       // priceを取得
       const price2 = await domains.price("haruki3", 2);
-      const txn2 = await domains.register("haruki3", 2, {
+      const txn2 = await domains.register(account1.address, "haruki3", 2, {
         value: ethers.parseEther(await ethers.formatEther(price2)),
       });
       await txn2.wait();
@@ -329,9 +339,11 @@ describe("Domains", function () {
       const {domains, account1} = await deployContract();
       // priceを取得
       const price = await domains.price("haruki4", 2);
-      const txn = await domains.connect(account1).register("haruki4", 2, {
-        value: ethers.parseEther(await ethers.formatEther(price)),
-      });
+      const txn = await domains
+        .connect(account1)
+        .register(account1.address, "haruki4", 2, {
+          value: ethers.parseEther(await ethers.formatEther(price)),
+        });
       await txn.wait();
 
       const domainOwner = await domains.domains("haruki4");
@@ -356,9 +368,11 @@ describe("Domains", function () {
     it("Should burn domain after expiration", async function () {
       const {domains, account1} = await deployContract();
       const price = await domains.price("expire", 1);
-      const txn = await domains.connect(account1).register("expire", 1, {
-        value: ethers.parseEther(await ethers.formatEther(price)),
-      });
+      const txn = await domains
+        .connect(account1)
+        .register(account1, "expire", 1, {
+          value: ethers.parseEther(await ethers.formatEther(price)),
+        });
       await txn.wait();
 
       const domainOwner = await domains.domains("expire");
@@ -379,6 +393,7 @@ describe("Domains", function () {
       const {domains, forwarder, account1, account2} = await deployContract();
       // create encode function data
       const data = domains.interface.encodeFunctionData("register", [
+        account1.address,
         "haruki5",
         2,
       ]);

@@ -111,10 +111,15 @@ contract Domains is ERC721URIStorage, ERC2771Context {
 
   /**
    * ドメインを登録するためのメソッド
+   * @param to 発行先アドレス
    * @param name ドメイン名
    * @param _years 所有期間(年単位)
    */
-  function register(string calldata name, uint256 _years) public payable {
+  function register(
+    address to,
+    string calldata name,
+    uint256 _years
+  ) public payable {
     // そのドメインがまだ登録されていないか確認します。
     if (domains[name] != address(0)) revert AlreadyRegistered();
     // 適切な長さであるかチェックする。
@@ -155,21 +160,21 @@ contract Domains is ERC721URIStorage, ERC2771Context {
     );
 
     // NFTとして発行する。
-    _safeMint(msg.sender, newRecordId);
+    _safeMint(to, newRecordId);
     // トークンURI情報を登録する。
     _setTokenURI(newRecordId, finalTokenUri);
 
     // 登録する。
-    domains[name] = msg.sender;
+    domains[name] = to;
     // namesにも登録する。
     names[newRecordId] = name;
     // 所有者のドメインリストに追加する。
-    ownerDomains[msg.sender].push(name);
+    ownerDomains[to].push(name);
     // 有効期限を設定する。
     expirationDates[newRecordId] = block.timestamp + (_years * 365 days);
 
     _tokenIds.increment();
-    emit Register(msg.sender, name);
+    emit Register(to, name);
   }
 
   /**
