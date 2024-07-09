@@ -63,65 +63,89 @@ describe("Domains", function () {
   };
 
   /**
-   * create Request data
+   * getMetaTxTypeData method
+   * @param chainId
+   * @param verifyingContract
+   * @returns
    */
-  async function createRequestData(
-    forwarder: SampleForwarder,
-    domain: any,
-    signer: any,
-    to: string,
-    value: number,
-    data: any
-  ) {
-    // create signature
-    const signature = await signer.signTypedData(
-      {
-        name: domain.name,
-        version: domain.version,
-        chainId: domain.chainId,
-        verifyingContract: domain.verifyingContract,
-      },
-      {
-        ForwardRequest: ForwardRequest,
-      },
-      {
-        from: signer.address,
-        to: to,
-        value: ethers.parseEther(value.toString()),
-        gas: 360000,
-        nonce: await forwarder.getNonce(signer.address),
-        data: data,
-      }
-    );
-    // verify signature
-    const result = await forwarder.verify(
-      {
-        from: signer.address,
-        to: to,
-        value: ethers.parseEther(value.toString()),
-        gas: 360000,
-        nonce: await forwarder.getNonce(signer.address),
-        data: data,
-      },
-      signature
-    );
-    // check result
-    expect(result).to.equal(true);
-
-    // create request data
-    const request = {
-      from: signer.address,
-      to: to,
-      value: ethers.parseEther(value.toString()),
-      gas: 360000,
-      nonce: await forwarder.getNonce(signer.address),
-      data: data,
-    };
+  const getMetaTxTypeData = (chainId: number, verifyingContract: string) => {
+    // Specification of the eth_signTypedData JSON RPC
     return {
-      request: request,
-      signature: signature,
+      types: {
+        ForwardRequest,
+      },
+      domain: {
+        name: "MinimalForwarder",
+        version: "0.0.1",
+        chainId,
+        verifyingContract,
+      },
+      primaryType: "ForwardRequest",
     };
-  }
+  };
+
+  /**
+   * signTypeData method
+   * @param signer
+   * @param data
+   * @returns
+   */
+  const signTypeData = async (signer: HardhatEthersSigner, data: any) => {
+    return await signer.signTypedData(data.domain, data.types, data.message);
+  };
+
+  /**
+   * buildRequest method
+   * @param forwarder
+   * @param input
+   * @param numberOfMint
+   * @param value
+   * @returns
+   */
+  const buildRequest = async (forwarder: any, input: any, value: number) => {
+    // get nonce from forwarder contract
+    // this nonce is used to prevent replay attack
+    const nonce = (await forwarder.getNonce(input.from)).toString();
+    const gas: number = 3600000;
+    return {
+      value: ethers.parseEther(value.toString()),
+      gas: gas,
+      nonce,
+      ...input,
+    };
+  };
+
+  /**
+   * buildTypedData method
+   * @param domain
+   * @param request
+   * @returns
+   */
+  const buildTypedData = async (domain: any, request: any) => {
+    const chainId = 31337;
+    const typeData = getMetaTxTypeData(chainId, domain.target);
+    return {...typeData, message: request};
+  };
+
+  /**
+   * signMetaTxRequest method
+   * @param signer
+   * @param forwarder
+   * @param input
+   * @param numberOfMint
+   * @returns
+   */
+  const signMetaTxRequest = async (
+    signer: HardhatEthersSigner,
+    forwarder: any,
+    input: any,
+    value: number
+  ) => {
+    const request = await buildRequest(forwarder, input, value);
+    const toSign = await buildTypedData(forwarder, request);
+    const signature = await signTypeData(signer, toSign);
+    return {signature, request};
+  };
 
   describe("Marketplace", function () {
     it("Should emit Domain Transfer event", async function () {
@@ -359,35 +383,36 @@ describe("Domains", function () {
         2,
       ]);
 
-      // get domain
-      const domain = {
-        name: "MinimalForwarder",
-        version: "0.0.1",
-        chainId: 31337,
-        verifyingContract: domains.target,
-      };
       // get price
       const price = await domains.price("haruki5", 2);
 
       // create relayer
       const relayer = account2;
       // creat request data
-      const result = await createRequestData(
-        forwarder,
-        domain,
+      const result = await signMetaTxRequest(
         account1,
-        domains.target as string,
-        Number(await ethers.formatEther(price)),
-        data
+        forwarder,
+        {
+          from: account1.address,
+          to: domains.target,
+          data,
+        },
+        Number(await ethers.formatEther(price))
       );
 
+      // check signature before execute
+      const verifyReslut = await forwarder.verify(
+        result.request,
+        result.signature
+      );
+      expect(verifyReslut).to.equal(true);
+
       // execute
-      await forwarder
+      const tx = await forwarder
         .connect(relayer)
-        .execute(result.request, result.signature)
-        .then(async (tx) => {
-          tx.wait();
-        });
+        .execute(result.request, result.signature);
+
+      await tx.wait();
     });
   });
 });
