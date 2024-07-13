@@ -38,7 +38,8 @@ describe("Domains", function () {
     const domains: Domains = await Domains.deploy(
       "xcr",
       forwarder.target,
-      marketplace.target
+      marketplace.target,
+      account1.address
     );
     await domains.waitForDeployment();
     // NFTMarketplaceにDomainsをセット
@@ -208,7 +209,7 @@ describe("Domains", function () {
       expect(allListings[0][1]).to.equal(domains.target);
 
       await marketplace.connect(account2).buyItem(0, "domain", 1, {
-        value: ethers.parseEther("0.01"),
+        value: ethers.parseEther("0.005"),
       });
 
       // リストされているドメインが一件もないことを確認する。
@@ -238,7 +239,7 @@ describe("Domains", function () {
 
       await expect(
         marketplace.connect(account2).buyItem(0, "sample", 1, {
-          value: ethers.parseEther("0.01"),
+          value: ethers.parseEther("0.005"),
         })
       )
         .to.emit(marketplace, "Sold")
@@ -283,7 +284,7 @@ describe("Domains", function () {
 
       const balance = await ethers.provider.getBalance(domains.target);
       const currentBalance = ethers.formatEther(balance);
-      expect(currentBalance).to.equal("0.01");
+      expect(currentBalance).to.equal("0.005");
     });
 
     it("Check Register × 2 function", async function () {
@@ -309,7 +310,7 @@ describe("Domains", function () {
 
       const balance = await ethers.provider.getBalance(domains.target);
       const currentBalance = ethers.formatEther(balance);
-      expect(currentBalance).to.equal("0.02");
+      expect(currentBalance).to.equal("0.01");
     });
 
     it("get DomainsByOwner after Register × 2 function", async function () {
@@ -351,7 +352,7 @@ describe("Domains", function () {
 
       const balance = await ethers.provider.getBalance(domains.target);
       const currentBalance = ethers.formatEther(balance);
-      expect(currentBalance).to.equal("0.01");
+      expect(currentBalance).to.equal("0.005");
 
       await domains.withdraw();
       // check balance after withdraw

@@ -22,6 +22,8 @@ contract Domains is ERC721URIStorage, ERC2771Context {
   string svgPartTwo = "</text></svg>";
   // NFTマーケットプレイス用のアドレス
   address public marketplaceAddress;
+  // relayer用のアドレス
+  address public relayerAddress;
 
   // トップレベルドメイン(TLD)
   string public tld;
@@ -71,7 +73,8 @@ contract Domains is ERC721URIStorage, ERC2771Context {
   constructor(
     string memory _tld,
     address _trustedForwarder,
-    address _marketplaceAddress
+    address _marketplaceAddress,
+    address _relayerAddress
   )
     payable
     ERC721("Xenea Domain Name Service", "XDN")
@@ -81,6 +84,7 @@ contract Domains is ERC721URIStorage, ERC2771Context {
     owner = payable(msg.sender);
     tld = _tld;
     marketplaceAddress = _marketplaceAddress;
+    relayerAddress = _relayerAddress;
     console.log("%s name service deployed", _tld);
   }
 
@@ -175,6 +179,10 @@ contract Domains is ERC721URIStorage, ERC2771Context {
 
     _tokenIds.increment();
     emit Register(to, name);
+
+    // 金額の半分をrelayerに送金する。
+    (bool success, ) = msg.sender.call{value: (msg.value / 2)}("");
+    require(success, "Failed to withdraw Matic");
   }
 
   /**

@@ -48,7 +48,12 @@ const deployDomainsContract: DeployFunction = async function (
 
   await deploy("Domains", {
     from: deployer,
-    args: [tld, await forwarder.getAddress(), await marketPlace.getAddress()],
+    args: [
+      tld,
+      await forwarder.getAddress(),
+      await marketPlace.getAddress(),
+      deployer,
+    ],
     log: true,
     autoMine: true,
   });

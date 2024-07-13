@@ -102,9 +102,21 @@ There are 3 update points.
 ### Wave6
 
 - ドメインを発行した時に支払った NativeToken の半分を Relayer に送金するロジックを追加する。
+
+  []()
+
 - ドメインの有効期限を画面から確認できるようにしました。
+
+  []()
+
 - メタトランザクション機能をフロントエンド側に実装する。
+
+  []()
+
 - リブランディングに伴う名称変更を行いました。
+
+  []()
+
 - Relayer を用意しました。
 
   [Relayer - 0xdec702931fBcaD4f4bB7C1C793E8e5Cdcf7c43A1](https://testnet.crossvaluescan.com/address/0xdec702931fBcaD4f4bB7C1C793E8e5Cdcf7c43A1)
