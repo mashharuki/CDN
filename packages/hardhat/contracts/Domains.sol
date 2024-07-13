@@ -182,7 +182,7 @@ contract Domains is ERC721URIStorage, ERC2771Context {
 
     // 金額の半分をrelayerに送金する。
     (bool success, ) = msg.sender.call{value: (msg.value / 2)}("");
-    require(success, "Failed to withdraw Matic");
+    require(success, "Failed to send to relayer");
   }
 
   /**

@@ -103,19 +103,23 @@ There are 3 update points.
 
 - ドメインを発行した時に支払った NativeToken の半分を Relayer に送金するロジックを追加する。
 
-  []()
+  [update points](https://github.com/mashharuki/CDN/blob/main/packages/hardhat/contracts/Domains.sol#L183-L185)
 
 - ドメインの有効期限を画面から確認できるようにしました。
 
-  []()
+  [update points](https://github.com/mashharuki/CDN/blob/main/packages/nextjs/app/domains/_components/DomainCard.tsx#L73-L84)
 
 - メタトランザクション機能をフロントエンド側に実装する。
 
-  []()
+  [update points](https://github.com/mashharuki/CDN/blob/main/packages/nextjs/app/cdn/_components/ServiceCard.tsx#L120-L173)
+
+  API のロジックも実装しました。
+
+  [updates points](https://github.com/mashharuki/CDN/blob/main/packages/nextjs/app/api/requestRelayer/route.ts)
 
 - リブランディングに伴う名称変更を行いました。
 
-  []()
+  [update points](https://github.com/mashharuki/CDN/blob/main/packages/nextjs/app/layout.tsx#L12-L13)
 
 - Relayer を用意しました。
 
@@ -139,8 +143,11 @@ There are 3 update points.
 ### Wave7
 
 - ドメインの有効期限が切れているかどうかチェックする機能をフロントエンド側から呼び出せるようにする。
+- relayer からメタトランザクション用のトランザクションを AWS Lambda に外出しする。
 
 ### Wave8
+
+- Central Data Hub との更なるコラボレーションのため ERC6551 向けの Indexer コンポーネントを追加開発する。
 
 ### Wave9
 
