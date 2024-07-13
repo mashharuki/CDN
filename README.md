@@ -102,8 +102,27 @@ There are 3 update points.
 ### Wave6
 
 - ドメインを発行した時に支払った NativeToken の半分を Relayer に送金するロジックを追加する。
+- ドメインの有効期限を画面から確認できるようにしました。
 - メタトランザクション機能をフロントエンド側に実装する。
-- リブランディングに伴う名称変更
+- リブランディングに伴う名称変更を行いました。
+- Relayer を用意しました。
+
+  [Relayer - 0xdec702931fBcaD4f4bB7C1C793E8e5Cdcf7c43A1](https://testnet.crossvaluescan.com/address/0xdec702931fBcaD4f4bB7C1C793E8e5Cdcf7c43A1)
+
+- 上記ロジックに対応したコントラクトをデプロイしました。
+
+  ```bash
+  ===================================== [START] =====================================
+  deploying "SampleForwarder" (tx: 0x15a54595e17615b140a3a047184cf0798c786bce66596ff2c993ed5ed8e58220)...: deployed at 0x83f15ccdD1278908dF5bC646E903afE2f342deC1 with 774154 gas
+  deploying "NFTMarketplace" (tx: 0xbd7ff66f405ad8c9a4a6c9a9f53b7e0166c74f0dc134101fef3cf229736b57cc)...: deployed at 0x808B72a2868D1201FCE18609fC51725DF2eDd845 with 1003591 gas
+  NFTMarketplace Contract is deployed: 0x808B72a2868D1201FCE18609fC51725DF2eDd845
+  deploying "Domains" (tx: 0x69716a070cf8b06948291f6ef33ae085a5beba804a98f66d3188c4ae62190da3)...: deployed at 0x4D75AeeeB9383A815174D3718Ed2B9dDFC9d1a07 with 4681881 gas
+  Domains Contract is deployed: 0x4D75AeeeB9383A815174D3718Ed2B9dDFC9d1a07
+  ===================================== [set Domains address START] =====================================
+  setDomainsAddress txn hash: 0xae42e5f995e09fafd05691c49eb6d22ae54d36583463370a72daed544a153626
+  ===================================== [set Domains address END] =====================================
+  ===================================== [END] =====================================
+  ```
 
 ### Wave7
 

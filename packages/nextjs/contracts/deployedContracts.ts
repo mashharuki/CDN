@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   5555: {
     Domains: {
-      address: "0xCa2d4842FB28190D0b68A5F620232685A2436CDe",
+      address: "0x4D75AeeeB9383A815174D3718Ed2B9dDFC9d1a07",
       abi: [
         {
           inputs: [
@@ -675,6 +675,11 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+            {
               internalType: "string",
               name: "name",
               type: "string",
@@ -932,7 +937,7 @@ const deployedContracts = {
       },
     },
     NFTMarketplace: {
-      address: "0xd18d0D5c3C8f915865069Fe11b25228a737E9925",
+      address: "0x808B72a2868D1201FCE18609fC51725DF2eDd845",
       abi: [
         {
           inputs: [],
@@ -1113,6 +1118,31 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "getAllListings",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "tokenId",
+                  type: "uint256",
+                },
+                {
+                  internalType: "address",
+                  name: "seller",
+                  type: "address",
+                },
+              ],
+              internalType: "struct NFTMarketplace.Listing[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "uint256",
@@ -1154,6 +1184,25 @@ const deployedContracts = {
           name: "listItem",
           outputs: [],
           stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "listedTokenIds",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
           type: "function",
         },
         {
@@ -1245,7 +1294,7 @@ const deployedContracts = {
       },
     },
     SampleForwarder: {
-      address: "0xacff3BF500e0E9F7734D39064B290873d80Fe749",
+      address: "0x83f15ccdD1278908dF5bC646E903afE2f342deC1",
       abi: [
         {
           inputs: [],
@@ -1460,149 +1509,6 @@ const deployedContracts = {
         getNonce: "@openzeppelin/contracts/metatx/MinimalForwarder.sol",
         verify: "@openzeppelin/contracts/metatx/MinimalForwarder.sol",
       },
-    },
-    YourContract: {
-      address: "0xe65C3cFDc4f79e36343cA2e79f17Ce8338095F4c",
-      abi: [
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "_owner",
-              type: "address",
-            },
-          ],
-          stateMutability: "nonpayable",
-          type: "constructor",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "greetingSetter",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "newGreeting",
-              type: "string",
-            },
-            {
-              indexed: false,
-              internalType: "bool",
-              name: "premium",
-              type: "bool",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "value",
-              type: "uint256",
-            },
-          ],
-          name: "GreetingChange",
-          type: "event",
-        },
-        {
-          inputs: [],
-          name: "greeting",
-          outputs: [
-            {
-              internalType: "string",
-              name: "",
-              type: "string",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "owner",
-          outputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "premium",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "_newGreeting",
-              type: "string",
-            },
-          ],
-          name: "setGreeting",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "totalCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "userGreetingCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "withdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          stateMutability: "payable",
-          type: "receive",
-        },
-      ],
-      inheritedFunctions: {},
     },
   },
 } as const;

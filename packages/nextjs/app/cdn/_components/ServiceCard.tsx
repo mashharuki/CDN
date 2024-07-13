@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Contract } from "ethers";
+import { Contract, ethers } from "ethers";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { formatEther } from "viem";
-import { useAccount, useReadContract, useSignTypedData, useWriteContract } from "wagmi";
+import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { POST } from "~~/app/api/requestRelayer/route";
 import Loading from "~~/components/Loading";
 import { useEthersSigner } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
-import { RELAYER_ADDRESS } from "~~/utils/constants";
-import { ForwardRequest } from "~~/utils/types";
+import { signMetaTxRequest } from "~~/utils/metaTx";
 
 type ContractUIProps = {
   deployedContractData?: any;
@@ -27,10 +27,9 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
   const [isAvailable, setIsAvailable] = useState<boolean>(false);
   const [years, setYears] = useState(1);
   const { targetNetwork } = useTargetNetwork();
-  const { signTypedDataAsync } = useSignTypedData();
   const { address } = useAccount();
 
-  const { isPending, writeContractAsync } = useWriteContract();
+  const { isPending } = useWriteContract();
   // get signer object
   const signer = useEthersSigner({ chainId: targetNetwork.id });
 
@@ -118,73 +117,34 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
         SampleForwarderContractData.abi,
         signer,
       ) as any;
-      // get domain
-      const domainData = await forwarder.eip712Domain();
       // generate encoded data
-      const data = domains.interface.encodeFunctionData("register", [domain, RELAYER_ADDRESS]);
-      // genearte signature
-      const signature = await signTypedDataAsync({
-        domain: {
-          name: domainData.name,
-          version: domainData.version,
-          chainId: domainData.chainId,
-          verifyingContract: domainData.verifyingContract as any,
-        },
-        types: {
-          ForwardRequest: ForwardRequest,
-        },
-        primaryType: "ForwardRequest",
-        message: {
-          from: address,
-          to: deployedContractData.address,
-          value: price,
-          gas: 9000000,
-          nonce: nonce,
-          data: data,
-        },
-      });
-      console.log("signature:", signature);
-      // 事前に署名データを検証
-      const result = await forwarder.verify(
+      const data = domains.interface.encodeFunctionData("register", [address, domain, years]);
+      // creat metaTx request data
+      const result = await signMetaTxRequest(
+        signer,
+        forwarder,
         {
           from: address,
-          to: deployedContractData.address,
-          value: price,
-          gas: 9000000,
-          nonce: nonce,
-          data: data,
+          to: domains.target,
+          data,
         },
-        signature,
+        Number(await ethers.formatEther(price)),
+        targetNetwork.id,
       );
-      console.log("verify result: ", result);
 
-      // register domain
+      /*
       await writeContractAsync({
         address: deployedContractData.address,
         functionName: "register",
         abi: deployedContractData.abi,
-        args: [domain as any, years],
+        args: [address, domain as any, years],
         chainId: targetNetwork.id,
         value: BigInt(Number(price)),
+      */
+      console.log("request:", result);
 
-        /*
-        // request forward request
-        await fetch("/api/requestRelayer", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            from: address,
-            to: deployedContractData.address,
-            value: price,
-            gas: 400000,
-            nonce: (nonce as any).toString(),
-            data: data,
-            signature: signature,
-          }),
-        */
-      }).then(async () => {
+      // call execute method from relayer
+      await POST({ request: result.request, signature: result.signature }).then(async () => {
         // console.log("gasless result:", await result.json());
         toast.success("🦄 Success!", {
           position: "top-right",

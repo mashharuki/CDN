@@ -1,46 +1,62 @@
 import { Contract, ethers } from "ethers";
 import deployedContracts from "~~/contracts/deployedContracts";
-
-const { RELAYER_PRIVATE_KEY } = process.env;
+import { RPC_URL } from "~~/utils/constants";
 
 /**
  * requestRelayer API
- * @param req
- * @param res
+ * @param requestData
  */
-export async function POST(request: any) {
+export async function POST(requestData: any) {
   console.log(
     " ========================================= [RequestRaler: START] ==============================================",
   );
 
-  const data = request.json();
-  console.log("data:", data);
-  const body: any = request?.body;
-  if (body === undefined) {
-    return new Response("Request has no body", {
+  console.log("request:", requestData);
+  const request: any = requestData?.request;
+  const signature: any = requestData?.signature;
+  const provider = new ethers.JsonRpcProvider(RPC_URL);
+
+  if (request === undefined) {
+    return new Response("Request has no request", {
       status: 503,
     });
   }
 
-  console.log("body:", request.body);
+  if (signature === undefined) {
+    return new Response("Request has no signature", {
+      status: 503,
+    });
+  }
+
+  if (process.env.NEXT_PUBLIC_RELAYER_PRIVATE_KEY === undefined) {
+    console.error("NEXT_PUBLIC_RELAYER_PRIVATE_KEY must be set");
+    return new Response("NEXT_PUBLIC_RELAYER_PRIVATE_KEY must be set", {
+      status: 503,
+    });
+  }
 
   // get relayer
-  const relayer: any = new ethers.Wallet(RELAYER_PRIVATE_KEY!);
+  const relayer = new ethers.Wallet(process.env.NEXT_PUBLIC_RELAYER_PRIVATE_KEY, provider);
   // create forwarder contract instance
   const forwarder: any = new Contract(
     deployedContracts[5555].SampleForwarder.address,
     deployedContracts[5555].SampleForwarder.abi,
     relayer,
   ) as any;
+  // connect to provider
+  // relayer.connect(provider);
 
   try {
     // call verify method
-    const result = await forwarder.verify(request, body!.signature);
+    const result = await forwarder.connect(relayer).verify(request, signature);
     console.log("verify result: ", result);
     if (!result) throw "invalid request data!";
 
     // call execute method from relayer
-    await forwarder.execute(request, body.signature);
+    const tx = await forwarder.connect(relayer).execute(request, signature);
+    tx.wait();
+
+    console.log("tx.hash:", tx.hash);
 
     console.log(
       " ========================================= [RequestRaler: END] ==============================================",
