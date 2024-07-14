@@ -101,6 +101,10 @@ There are 3 update points.
 
 ### Wave6
 
+- OpenZeppelin のバージョンを`4.8.3`から`5.0.1`にバージョンアップさせました。
+
+  [updates points](https://github.com/mashharuki/CDN/blob/main/packages/hardhat/contracts/Domains.sol)
+
 - ドメインを発行した時に支払った NativeToken の半分を Relayer に送金するロジックを追加する。
 
   [update points](https://github.com/mashharuki/CDN/blob/main/packages/hardhat/contracts/Domains.sol#L183-L185)

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IDomains.sol";
 import "hardhat/console.sol";
@@ -28,7 +28,7 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
   /**
    * コンストラクター
    */
-  constructor() {}
+  constructor() Ownable(msg.sender) {}
 
   /**
    * Domainsコントラクトのアドレスを設定するためのメソッド

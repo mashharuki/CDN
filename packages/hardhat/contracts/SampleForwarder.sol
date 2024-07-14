@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.19;
 
-import "@openzeppelin/contracts/metatx/MinimalForwarder.sol";
+import "@openzeppelin/contracts/metatx/ERC2771Forwarder.sol";
 
-contract SampleForwarder is MinimalForwarder {
-  constructor() MinimalForwarder() {}
+contract SampleForwarder is ERC2771Forwarder {
+  constructor() ERC2771Forwarder("SampleForwarder") {}
 }
