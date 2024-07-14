@@ -16,8 +16,9 @@ contract NFTMarketplace is ReentrancyGuard, Ownable {
   }
 
   address public domainsContractAddress;
-  mapping(uint256 => Listing) public listings;
   uint256[] public listedTokenIds;
+
+  mapping(uint256 => Listing) public listings;
 
   event Listed(uint256 indexed tokenId, address indexed seller);
   event Canceled(uint256 indexed tokenId, address indexed seller);

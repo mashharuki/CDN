@@ -63,92 +63,6 @@ describe("Domains", function () {
     return `${year}/${month}/${day}`;
   };
 
-  /**
-   * getMetaTxTypeData method
-   * @param chainId
-   * @param verifyingContract
-   * @returns
-   */
-  const getMetaTxTypeData = (chainId: number, verifyingContract: string) => {
-    // Specification of the eth_signTypedData JSON RPC
-    return {
-      types: {
-        ForwardRequest,
-      },
-      domain: {
-        name: "MinimalForwarder",
-        version: "0.0.1",
-        chainId,
-        verifyingContract,
-      },
-      primaryType: "ForwardRequest",
-    };
-  };
-
-  /**
-   * signTypeData method
-   * @param signer
-   * @param data
-   * @returns
-   */
-  const signTypeData = async (signer: HardhatEthersSigner, data: any) => {
-    return await signer.signTypedData(data.domain, data.types, data.message);
-  };
-
-  /**
-   * buildRequest method
-   * @param forwarder
-   * @param input
-   * @param numberOfMint
-   * @param value
-   * @returns
-   */
-  const buildRequest = async (forwarder: any, input: any, value: number) => {
-    // get nonce from forwarder contract
-    // this nonce is used to prevent replay attack
-    const nonce = (await forwarder.nonces(input.from)).toString();
-    const gas: number = 3600000;
-    return {
-      value: ethers.parseEther(value.toString()),
-      gas: gas,
-      nonce,
-      ...input,
-    };
-  };
-
-  /**
-   * buildTypedData method
-   * @param domain
-   * @param request
-   * @returns
-   */
-  const buildTypedData = async (domain: any, request: any) => {
-    const chainId = 31337;
-    const typeData = getMetaTxTypeData(chainId, domain.target);
-    return {...typeData, message: request};
-  };
-
-  /**
-   * signMetaTxRequest method
-   * @param signer
-   * @param forwarder
-   * @param input
-   * @param numberOfMint
-   * @returns
-   */
-  const signMetaTxRequest = async (
-    signer: HardhatEthersSigner,
-    forwarder: any,
-    domains: any,
-    input: any,
-    value: number
-  ) => {
-    const request = await buildRequest(forwarder, input, value);
-    const toSign = await buildTypedData(domains, request);
-    const signature = await signTypeData(signer, toSign);
-    return {signature, request};
-  };
-
   describe("Marketplace", function () {
     it("Should emit Domain Transfer event", async function () {
       const {domains, marketplace, account1} = await deployContract();
@@ -407,7 +321,9 @@ describe("Domains", function () {
       // get deadline
       const currentTime = Math.floor(Date.now() / 1000);
       const futureTime = currentTime + 60;
-      const uint48Time = BigInt(futureTime) % 2n ** 48n;
+      const uint48Time = BigInt(futureTime) % BigInt(2 ** 48);
+
+      console.log("domain:", domain);
 
       // create signature
       const signature = await account1.signTypedData(
