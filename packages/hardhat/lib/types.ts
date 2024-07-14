@@ -11,5 +11,6 @@ export const ForwardRequest = [
   {name: "value", type: "uint256"},
   {name: "gas", type: "uint256"},
   {name: "nonce", type: "uint256"},
+  {name: "deadline", type: "uint48"},
   {name: "data", type: "bytes"},
 ];
