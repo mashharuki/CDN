@@ -13,17 +13,10 @@ export async function POST(requestData: any) {
 
   console.log("request:", requestData);
   const request: any = requestData?.request;
-  const signature: any = requestData?.signature;
   const provider = new ethers.JsonRpcProvider(RPC_URL);
 
   if (request === undefined) {
     return new Response("Request has no request", {
-      status: 503,
-    });
-  }
-
-  if (signature === undefined) {
-    return new Response("Request has no signature", {
       status: 503,
     });
   }
@@ -48,12 +41,12 @@ export async function POST(requestData: any) {
 
   try {
     // call verify method
-    const result = await forwarder.connect(relayer).verify(request, signature);
+    const result = await forwarder.connect(relayer).verify(request);
     console.log("verify result: ", result);
     if (!result) throw "invalid request data!";
 
     // call execute method from relayer
-    const tx = await forwarder.connect(relayer).execute(request, signature);
+    const tx = await forwarder.connect(relayer).execute(request);
     tx.wait();
 
     console.log("tx.hash:", tx.hash);
