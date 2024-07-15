@@ -319,11 +319,12 @@ describe("Domains", function () {
       // get domain
       const domain = await forwarder.eip712Domain();
       // get deadline
-      const currentTime = Math.floor(Date.now() / 1000);
-      const futureTime = currentTime + 60;
-      const uint48Time = BigInt(futureTime) % BigInt(2 ** 48);
-
-      console.log("domain:", domain);
+      // get current blockchain timestamp
+      const currentBlock = await ethers.provider.getBlock("latest");
+      const currentTime = currentBlock!.timestamp;
+      // set deadline to be 5 minutes in the future
+      const futureTime = currentTime + 5 * 60; // 5 minutes in seconds
+      const uint48Time = BigInt(futureTime) % 2n ** 48n;
 
       // create signature
       const signature = await account1.signTypedData(
@@ -339,8 +340,8 @@ describe("Domains", function () {
         {
           from: account1.address,
           to: domains.target,
-          value: ethers.parseEther(price.toString()),
-          gas: 3600000n,
+          value: price.toString(),
+          gas: 9000000n,
           nonce: await forwarder.nonces(account1.address),
           deadline: uint48Time,
           data: data,
@@ -350,21 +351,60 @@ describe("Domains", function () {
       const request = {
         from: account1.address,
         to: domains.target,
-        value: ethers.parseEther(price.toString()),
-        gas: 3600000n,
+        value: price.toString(),
+        gas: 9000000n,
         nonce: await forwarder.nonces(account1.address),
         deadline: uint48Time,
         data: data,
         signature: signature,
       };
-      // check signature before execute
+
+      // オフチェーンで署名が合っているか確認する。
+      const expectedSigner = ethers.verifyTypedData(
+        {
+          name: domain.name,
+          version: domain.version,
+          chainId: domain.chainId,
+          verifyingContract: domain.verifyingContract,
+        },
+        {
+          ForwardRequest: ForwardRequest,
+        },
+        {
+          from: account1.address,
+          to: domains.target,
+          value: price.toString(),
+          gas: 9000000n,
+          nonce: await forwarder.nonces(account1.address),
+          deadline: uint48Time,
+          data: data,
+        },
+        signature
+      );
+      // 署名者が期待通りか確認する。
+      expect(expectedSigner).to.equal(account1.address);
+
+      // check signature on chain before execute
       const verifyReslut = await forwarder.verify(request);
       expect(verifyReslut).to.equal(true);
 
+      // Fund the Forwarder contract with 0.001 ETH from account1
+      await account1.sendTransaction({
+        to: forwarder.target,
+        value: price.toString(),
+      });
+
       // execute
-      const tx = await forwarder.connect(account2).execute(request);
+      /* */
+      const tx = await forwarder.connect(account2).execute(request, {
+        value: price.toString(),
+      });
 
       await tx.wait();
+
+      // Check the balance of account1 to ensure the NFT was minted
+      const balance = await domains.balanceOf(account1.address);
+      expect(balance).to.equal(1);
     });
   });
 });
