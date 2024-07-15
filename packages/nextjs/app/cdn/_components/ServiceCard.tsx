@@ -1,16 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Contract, ethers } from "ethers";
+import { Contract } from "ethers";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { formatEther } from "viem";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { signTypedData } from "wagmi/actions";
 import { POST } from "~~/app/api/requestRelayer/route";
 import Loading from "~~/components/Loading";
 import { useEthersSigner } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
-import { signMetaTxRequest } from "~~/utils/metaTx";
+import { wagmiConfig } from "~~/services/web3/wagmiConfig";
+import { getUint48 } from "~~/utils/helper";
+import { ForwardRequest } from "~~/utils/types";
 
 type ContractUIProps = {
   deployedContractData?: any;
@@ -119,32 +122,47 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
       ) as any;
       // generate encoded data
       const data = domains.interface.encodeFunctionData("register", [address, domain, years]);
+      // get EIP712 domain
+      const eip721Domain = await forwarder.eip712Domain();
+      // get deadline
+      const uint48Time = await getUint48();
       // creat metaTx request data
-      const result = await signMetaTxRequest(
-        signer,
-        forwarder,
-        {
+      const signature = await signTypedData(wagmiConfig, {
+        domain: {
+          name: eip721Domain.name,
+          version: eip721Domain.version,
+          chainId: eip721Domain.chainId,
+          verifyingContract: eip721Domain.verifyingContract,
+        },
+        types: {
+          ForwardRequest: ForwardRequest,
+        },
+        primaryType: "ForwardRequest",
+        message: {
           from: address,
           to: domains.target,
-          data,
+          value: price.toString(),
+          gas: 9000000n,
+          nonce: await forwarder.nonces(address),
+          deadline: uint48Time,
+          data: data,
         },
-        Number(await ethers.formatEther(price)),
-        targetNetwork.id,
-      );
+      });
 
-      /*
-      await writeContractAsync({
-        address: deployedContractData.address,
-        functionName: "register",
-        abi: deployedContractData.abi,
-        args: [address, domain as any, years],
-        chainId: targetNetwork.id,
-        value: BigInt(Number(price)),
-      */
-      console.log("request:", result);
+      console.log("signature:", signature);
 
       // call execute method from relayer
-      await POST({ request: result.request, signature: result.signature }).then(async () => {
+      await POST({
+        request: {
+          from: address,
+          to: domains.target,
+          value: price.toString(),
+          gas: 9000000n,
+          deadline: uint48Time,
+          data: data,
+          signature: signature,
+        },
+      }).then(async () => {
         // console.log("gasless result:", await result.json());
         toast.success("🦄 Success!", {
           position: "top-right",

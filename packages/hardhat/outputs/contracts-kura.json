@@ -1,8 +1,8 @@
 {
   "contracts": {
     "YourContract": "0xe65C3cFDc4f79e36343cA2e79f17Ce8338095F4c",
-    "Domains": "0x4D75AeeeB9383A815174D3718Ed2B9dDFC9d1a07",
-    "SampleForwarder": "0x83f15ccdD1278908dF5bC646E903afE2f342deC1",
-    "NFTMarketplace": "0x808B72a2868D1201FCE18609fC51725DF2eDd845"
+    "Domains": "0x9dbec436843B2f12BAf8A372CC210a0dA8c10281",
+    "SampleForwarder": "0x62CD2CBC855746c16FD16b4E5b34110e1549fc2e",
+    "NFTMarketplace": "0x3c955E552Fd383435765313330301c23f014e0a6"
   }
 }

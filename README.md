@@ -105,7 +105,7 @@ There are 3 update points.
 
   [updates points](https://github.com/mashharuki/CDN/blob/main/packages/hardhat/contracts/Domains.sol)
 
-- ドメインを発行した時に支払った NativeToken の半分を Relayer に送金するロジックを追加する。
+- ドメインを発行した時に支払った NativeToken の半分を Relayer に送金するロジックを追加しました。
 
   [update points](https://github.com/mashharuki/CDN/blob/main/packages/hardhat/contracts/Domains.sol#L183-L185)
 
@@ -113,7 +113,7 @@ There are 3 update points.
 
   [update points](https://github.com/mashharuki/CDN/blob/main/packages/nextjs/app/domains/_components/DomainCard.tsx#L73-L84)
 
-- メタトランザクション機能をフロントエンド側に実装する。
+- メタトランザクション機能をフロントエンド側に実装しました。
 
   [update points](https://github.com/mashharuki/CDN/blob/main/packages/nextjs/app/cdn/_components/ServiceCard.tsx#L120-L173)
 
@@ -133,16 +133,26 @@ There are 3 update points.
 
   ```bash
   ===================================== [START] =====================================
-  deploying "SampleForwarder" (tx: 0x15a54595e17615b140a3a047184cf0798c786bce66596ff2c993ed5ed8e58220)...: deployed at 0x83f15ccdD1278908dF5bC646E903afE2f342deC1 with 774154 gas
-  deploying "NFTMarketplace" (tx: 0xbd7ff66f405ad8c9a4a6c9a9f53b7e0166c74f0dc134101fef3cf229736b57cc)...: deployed at 0x808B72a2868D1201FCE18609fC51725DF2eDd845 with 1003591 gas
-  NFTMarketplace Contract is deployed: 0x808B72a2868D1201FCE18609fC51725DF2eDd845
-  deploying "Domains" (tx: 0x69716a070cf8b06948291f6ef33ae085a5beba804a98f66d3188c4ae62190da3)...: deployed at 0x4D75AeeeB9383A815174D3718Ed2B9dDFC9d1a07 with 4681881 gas
-  Domains Contract is deployed: 0x4D75AeeeB9383A815174D3718Ed2B9dDFC9d1a07
+  deploying "SampleForwarder" (tx: 0xf4803964ec863b99e37fc08849ae3ee6432b64f06e7db01b7778e55d0ea85b9d)...: deployed at 0x62CD2CBC855746c16FD16b4E5b34110e1549fc2e with 951238 gas
+  deploying "NFTMarketplace" (tx: 0xcbb0b2041bce437247d62dc072e49e6173c29b2e78e78e390776ecf3490dcb91)...: deployed at 0x3c955E552Fd383435765313330301c23f014e0a6 with 983241 gas
+  NFTMarketplace Contract is deployed: 0x3c955E552Fd383435765313330301c23f014e0a6
+  deploying "Domains" (tx: 0x1b88ee8705d030acb658644bb671bd42df39a08a74403f5f956ce6222a5b06de)...: deployed at 0x9dbec436843B2f12BAf8A372CC210a0dA8c10281 with 4614653 gas
+  Domains Contract is deployed: 0x9dbec436843B2f12BAf8A372CC210a0dA8c10281
   ===================================== [set Domains address START] =====================================
-  setDomainsAddress txn hash: 0xae42e5f995e09fafd05691c49eb6d22ae54d36583463370a72daed544a153626
+  setDomainsAddress txn hash: 0x59bd2091d065198a7055c89143a04efb73f1f771b4398aa5652271c901a93abe
   ===================================== [set Domains address END] =====================================
   ===================================== [END] =====================================
   ```
+
+英語での更新内容説明文
+
+- We have upgraded the version of OpenZeppelin from 4.8.3 to 5.0.1.
+- We added a logic to send half of the NativeToken paid when issuing a domain to the Relayer.
+  You can now check the domain expiration date on the screen.
+- We implemented the meta-transaction feature on the front end.
+- We performed a name change due to rebranding.
+- We prepared a Relayer.
+- We deployed contracts that correspond to the above logic.
 
 ### Wave7
 

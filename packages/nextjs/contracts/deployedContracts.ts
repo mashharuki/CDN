@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   5555: {
     Domains: {
-      address: "0x4D75AeeeB9383A815174D3718Ed2B9dDFC9d1a07",
+      address: "0x9dbec436843B2f12BAf8A372CC210a0dA8c10281",
       abi: [
         {
           inputs: [
@@ -26,6 +26,11 @@ const deployedContracts = {
               name: "_marketplaceAddress",
               type: "address",
             },
+            {
+              internalType: "address",
+              name: "_relayerAddress",
+              type: "address",
+            },
           ],
           stateMutability: "payable",
           type: "constructor",
@@ -33,6 +38,109 @@ const deployedContracts = {
         {
           inputs: [],
           name: "AlreadyRegistered",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "ERC721IncorrectOwner",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "operator",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "ERC721InsufficientApproval",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "approver",
+              type: "address",
+            },
+          ],
+          name: "ERC721InvalidApprover",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "operator",
+              type: "address",
+            },
+          ],
+          name: "ERC721InvalidOperator",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "ERC721InvalidOwner",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "receiver",
+              type: "address",
+            },
+          ],
+          name: "ERC721InvalidReceiver",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+          ],
+          name: "ERC721InvalidSender",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "ERC721NonexistentToken",
           type: "error",
         },
         {
@@ -696,6 +804,19 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "relayerAddress",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "address",
@@ -870,6 +991,19 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "trustedForwarder",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "string",
@@ -934,15 +1068,43 @@ const deployedContracts = {
         transferFrom:
           "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
         isTrustedForwarder: "@openzeppelin/contracts/metatx/ERC2771Context.sol",
+        trustedForwarder: "@openzeppelin/contracts/metatx/ERC2771Context.sol",
       },
     },
     NFTMarketplace: {
-      address: "0x808B72a2868D1201FCE18609fC51725DF2eDd845",
+      address: "0x3c955E552Fd383435765313330301c23f014e0a6",
       abi: [
         {
           inputs: [],
           stateMutability: "nonpayable",
           type: "constructor",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "OwnableInvalidOwner",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "OwnableUnauthorizedAccount",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "ReentrancyGuardReentrantCall",
+          type: "error",
         },
         {
           anonymous: false,
@@ -1294,12 +1456,103 @@ const deployedContracts = {
       },
     },
     SampleForwarder: {
-      address: "0x83f15ccdD1278908dF5bC646E903afE2f342deC1",
+      address: "0x62CD2CBC855746c16FD16b4E5b34110e1549fc2e",
       abi: [
         {
           inputs: [],
           stateMutability: "nonpayable",
           type: "constructor",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "AddressInsufficientBalance",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint48",
+              name: "deadline",
+              type: "uint48",
+            },
+          ],
+          name: "ERC2771ForwarderExpiredRequest",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "signer",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+          ],
+          name: "ERC2771ForwarderInvalidSigner",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "requestedValue",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "msgValue",
+              type: "uint256",
+            },
+          ],
+          name: "ERC2771ForwarderMismatchedValue",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "target",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "forwarder",
+              type: "address",
+            },
+          ],
+          name: "ERC2771UntrustfulTarget",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "FailedInnerCall",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "currentNonce",
+              type: "uint256",
+            },
+          ],
+          name: "InvalidAccountNonce",
+          type: "error",
         },
         {
           inputs: [],
@@ -1322,6 +1575,73 @@ const deployedContracts = {
           inputs: [],
           name: "EIP712DomainChanged",
           type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "signer",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "nonce",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "success",
+              type: "bool",
+            },
+          ],
+          name: "ExecutedForwardRequest",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "FallbackReceived",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "Received",
+          type: "event",
+        },
+        {
+          stateMutability: "payable",
+          type: "fallback",
         },
         {
           inputs: [],
@@ -1391,39 +1711,83 @@ const deployedContracts = {
                   type: "uint256",
                 },
                 {
-                  internalType: "uint256",
-                  name: "nonce",
-                  type: "uint256",
+                  internalType: "uint48",
+                  name: "deadline",
+                  type: "uint48",
                 },
                 {
                   internalType: "bytes",
                   name: "data",
                   type: "bytes",
                 },
+                {
+                  internalType: "bytes",
+                  name: "signature",
+                  type: "bytes",
+                },
               ],
-              internalType: "struct MinimalForwarder.ForwardRequest",
-              name: "req",
+              internalType: "struct ERC2771Forwarder.ForwardRequestData",
+              name: "request",
               type: "tuple",
-            },
-            {
-              internalType: "bytes",
-              name: "signature",
-              type: "bytes",
             },
           ],
           name: "execute",
-          outputs: [
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
             {
-              internalType: "bool",
-              name: "",
-              type: "bool",
+              components: [
+                {
+                  internalType: "address",
+                  name: "from",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "to",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "value",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "gas",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint48",
+                  name: "deadline",
+                  type: "uint48",
+                },
+                {
+                  internalType: "bytes",
+                  name: "data",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes",
+                  name: "signature",
+                  type: "bytes",
+                },
+              ],
+              internalType: "struct ERC2771Forwarder.ForwardRequestData[]",
+              name: "requests",
+              type: "tuple[]",
             },
             {
-              internalType: "bytes",
-              name: "",
-              type: "bytes",
+              internalType: "address payable",
+              name: "refundReceiver",
+              type: "address",
             },
           ],
+          name: "executeBatch",
+          outputs: [],
           stateMutability: "payable",
           type: "function",
         },
@@ -1431,11 +1795,11 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "address",
-              name: "from",
+              name: "owner",
               type: "address",
             },
           ],
-          name: "getNonce",
+          name: "nonces",
           outputs: [
             {
               internalType: "uint256",
@@ -1471,24 +1835,24 @@ const deployedContracts = {
                   type: "uint256",
                 },
                 {
-                  internalType: "uint256",
-                  name: "nonce",
-                  type: "uint256",
+                  internalType: "uint48",
+                  name: "deadline",
+                  type: "uint48",
                 },
                 {
                   internalType: "bytes",
                   name: "data",
                   type: "bytes",
                 },
+                {
+                  internalType: "bytes",
+                  name: "signature",
+                  type: "bytes",
+                },
               ],
-              internalType: "struct MinimalForwarder.ForwardRequest",
-              name: "req",
+              internalType: "struct ERC2771Forwarder.ForwardRequestData",
+              name: "request",
               type: "tuple",
-            },
-            {
-              internalType: "bytes",
-              name: "signature",
-              type: "bytes",
             },
           ],
           name: "verify",
@@ -1502,12 +1866,17 @@ const deployedContracts = {
           stateMutability: "view",
           type: "function",
         },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
       ],
       inheritedFunctions: {
-        eip712Domain: "@openzeppelin/contracts/metatx/MinimalForwarder.sol",
-        execute: "@openzeppelin/contracts/metatx/MinimalForwarder.sol",
-        getNonce: "@openzeppelin/contracts/metatx/MinimalForwarder.sol",
-        verify: "@openzeppelin/contracts/metatx/MinimalForwarder.sol",
+        eip712Domain: "@openzeppelin/contracts/metatx/ERC2771Forwarder.sol",
+        execute: "@openzeppelin/contracts/metatx/ERC2771Forwarder.sol",
+        executeBatch: "@openzeppelin/contracts/metatx/ERC2771Forwarder.sol",
+        nonces: "@openzeppelin/contracts/metatx/ERC2771Forwarder.sol",
+        verify: "@openzeppelin/contracts/metatx/ERC2771Forwarder.sol",
       },
     },
   },
