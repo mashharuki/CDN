@@ -11,7 +11,7 @@ export async function POST(requestData: any) {
     " ========================================= [RequestRaler: START] ==============================================",
   );
 
-  console.log("request:", requestData);
+  console.log("request:", requestData?.request);
   const request: any = requestData?.request;
   const provider = new ethers.JsonRpcProvider(RPC_URL);
 

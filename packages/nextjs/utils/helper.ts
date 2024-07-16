@@ -16,8 +16,8 @@ export const formatUnixTimestampBigInt = (timestamp: bigint): string => {
 export const getUint48 = () => {
   // get deadline
   const currentTime = Math.floor(Date.now() / 1000);
-  const futureTime = currentTime + 60;
-  const uint48Time = BigInt(futureTime) % BigInt(2 ** 48);
+  const futureTime = currentTime + 600;
+  const uint48Time = BigInt(futureTime) % BigInt(4 ** 48);
 
   return uint48Time;
 };

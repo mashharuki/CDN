@@ -359,7 +359,7 @@ describe("Domains", function () {
         signature: signature,
       };
 
-      console.log("price:", price.toString());
+      console.log("uint48Time:", uint48Time);
 
       // オフチェーンで署名が合っているか確認する。
       const expectedSigner = ethers.verifyTypedData(
