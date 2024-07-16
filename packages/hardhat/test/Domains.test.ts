@@ -359,6 +359,8 @@ describe("Domains", function () {
         signature: signature,
       };
 
+      console.log("price:", price.toString());
+
       // オフチェーンで署名が合っているか確認する。
       const expectedSigner = ethers.verifyTypedData(
         {

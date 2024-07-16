@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { signTypedData } from "@wagmi/core";
 import { Contract } from "ethers";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { formatEther } from "viem";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { signTypedData } from "wagmi/actions";
 import { POST } from "~~/app/api/requestRelayer/route";
 import Loading from "~~/components/Loading";
 import { useEthersSigner } from "~~/hooks/scaffold-eth";
@@ -56,18 +56,6 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
       retry: true,
     },
   });
-  // get signer's nonce
-  const { data: nonce, refetch: getNonce } = useReadContract({
-    address: SampleForwarderContractData.address,
-    functionName: "getNonce",
-    abi: SampleForwarderContractData.abi,
-    args: [address as any],
-    chainId: targetNetwork.id,
-    query: {
-      enabled: true,
-      retry: true,
-    },
-  });
 
   /**
    * checkRegistered
@@ -107,11 +95,8 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
    */
   const register = async () => {
     try {
-      // get nonce
-      await getNonce();
       console.log("address:", address);
       console.log("deployedContractData.address:", deployedContractData.address);
-      console.log("nonce:", nonce);
 
       // create Contract object
       const domains: any = new Contract(deployedContractData.address, deployedContractData.abi, signer) as any;
@@ -126,6 +111,8 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
       const eip721Domain = await forwarder.eip712Domain();
       // get deadline
       const uint48Time = await getUint48();
+      console.log("getUint48:", uint48Time);
+
       // creat metaTx request data
       const signature = await signTypedData(wagmiConfig, {
         domain: {
@@ -158,6 +145,7 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
           to: domains.target,
           value: price.toString(),
           gas: 9000000n,
+          nonce: await forwarder.nonces(address),
           deadline: uint48Time,
           data: data,
           signature: signature,

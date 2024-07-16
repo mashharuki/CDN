@@ -36,12 +36,10 @@ export async function POST(requestData: any) {
     deployedContracts[5555].SampleForwarder.abi,
     relayer,
   ) as any;
-  // connect to provider
-  // relayer.connect(provider);
 
   try {
     // call verify method
-    const result = await forwarder.connect(relayer).verify(request);
+    const result = await forwarder.verify(request);
     console.log("verify result: ", result);
     if (!result) throw "invalid request data!";
 
