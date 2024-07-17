@@ -37,6 +37,8 @@ export async function POST(requestData: any) {
     relayer,
   ) as any;
 
+  console.log("relayer:", relayer.address);
+
   try {
     // call verify method
     const result = await forwarder.verify(request);

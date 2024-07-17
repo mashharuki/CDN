@@ -390,6 +390,8 @@ describe("Domains", function () {
       const verifyReslut = await forwarder.verify(request);
       expect(verifyReslut).to.equal(true);
 
+      console.log("request:", request);
+
       // Fund the Forwarder contract with 0.001 ETH from account1
       await account1.sendTransaction({
         to: forwarder.target,

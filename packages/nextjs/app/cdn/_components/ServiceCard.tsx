@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { signTypedData } from "@wagmi/core";
-import { Contract } from "ethers";
+import { Contract, ethers } from "ethers";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { formatEther } from "viem";
@@ -11,7 +10,7 @@ import { POST } from "~~/app/api/requestRelayer/route";
 import Loading from "~~/components/Loading";
 import { useEthersSigner } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
-import { wagmiConfig } from "~~/services/web3/wagmiConfig";
+import { RPC_URL } from "~~/utils/constants";
 import { getUint48 } from "~~/utils/helper";
 import { ForwardRequest } from "~~/utils/types";
 
@@ -109,32 +108,35 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
       const data = domains.interface.encodeFunctionData("register", [address, domain, years]);
       // get EIP712 domain
       const eip721Domain = await forwarder.eip712Domain();
+      const provider = new ethers.JsonRpcProvider(RPC_URL);
+      // get current block
+      const currentBlock = await provider.getBlock("latest");
+      const currentTime = currentBlock!.timestamp;
       // get deadline
-      const uint48Time = await getUint48();
+      const uint48Time = await getUint48(currentTime);
       console.log("getUint48:", uint48Time);
 
       // creat metaTx request data
-      const signature = await signTypedData(wagmiConfig, {
-        domain: {
+      const signature = await signer!.signTypedData(
+        {
           name: eip721Domain.name,
           version: eip721Domain.version,
           chainId: eip721Domain.chainId,
           verifyingContract: eip721Domain.verifyingContract,
         },
-        types: {
+        {
           ForwardRequest: ForwardRequest,
         },
-        primaryType: "ForwardRequest",
-        message: {
+        {
           from: address,
           to: domains.target,
           value: price.toString(),
-          gas: 9000000n,
+          gas: 900000n,
           nonce: await forwarder.nonces(address),
           deadline: uint48Time,
           data: data,
         },
-      });
+      );
 
       console.log("signature:", signature);
 
@@ -144,8 +146,8 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
           from: address,
           to: domains.target,
           value: price.toString(),
-          gas: 9000000n,
-          nonce: await forwarder.nonces(address),
+          gas: 900000n,
+          //nonce: await forwarder.nonces(address),
           deadline: uint48Time,
           data: data,
           signature: signature,
