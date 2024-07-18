@@ -19,7 +19,7 @@ const Domains: NextPage = () => {
   const contractNames = Object.keys(contractsData) as ContractName[];
 
   // get contractData
-  const { data: cdhContractData } = useDeployedContractInfo(contractNames[4]);
+  const { data: cdhContractData } = useDeployedContractInfo(contractNames[3]);
   const { data: deployedContractData } = useDeployedContractInfo(contractNames[0]);
   const { data: nftMarketContractData } = useDeployedContractInfo(contractNames[1]);
 

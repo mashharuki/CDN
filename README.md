@@ -195,7 +195,7 @@ There are 3 update points.
 - register new domain
 
   ```bash
-  yarn hardhat:register --name cdn --amount 0.001 --network kura
+  yarn hardhat:register --name cdn --amount 0.001 --year 1 --network kura
   ```
 
 - check price of new domain name
