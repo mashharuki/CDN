@@ -47,7 +47,7 @@ export async function POST(requestData: any) {
 
     // call execute method from relayer
     const tx = await forwarder.connect(relayer).execute(request);
-    tx.wait();
+    await tx.wait();
 
     console.log("tx.hash:", tx.hash);
 
