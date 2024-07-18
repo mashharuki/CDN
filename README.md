@@ -198,6 +198,12 @@ There are 3 update points.
   yarn hardhat:register --name cdn --amount 0.001 --year 1 --network kura
   ```
 
+- gasless register new domain
+
+  ```bash
+  yarn hardhat:gaslessRegister --name cdn2 --year 1 --network kura
+  ```
+
 - check price of new domain name
 
   ```bash

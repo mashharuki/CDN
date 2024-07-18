@@ -25,6 +25,7 @@
     "hardhat:compile": "yarn workspace @se-2/hardhat compile",
     "hardhat:test": "yarn workspace @se-2/hardhat test",
     "hardhat:register": "yarn workspace @se-2/hardhat task:register",
+    "hardhat:gaslessRegister": "yarn workspace @se-2/hardhat task:gaslessRegister",
     "hardhat:price": "yarn workspace @se-2/hardhat task:price",
     "hardhat:withdraw": "yarn workspace @se-2/hardhat task:withdraw",
     "hardhat:setRecord": "yarn workspace @se-2/hardhat task:setRecord",

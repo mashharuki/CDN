@@ -17,6 +17,7 @@
     "verify": "hardhat etherscan-verify",
     "hardhat-verify": "hardhat verify",
     "task:register": "hardhat register",
+    "task:gaslessRegister": "hardhat gaslessRegister",
     "task:price": "hardhat price",
     "task:withdraw": "hardhat withdraw",
     "task:setRecord": "hardhat setRecord",
