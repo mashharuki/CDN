@@ -9,6 +9,9 @@ const {RELAYER_PRIVATE_KEY} = process.env;
  * リクエストをブロックチェーンに送信するメソッド
  */
 export const requestRelayer = async (request: any) => {
+  console.log(
+    " ========================================= [RequestRaler: START] =============================================="
+  );
   // プロバイダーを作成
   const provider = new ethers.JsonRpcProvider(RPC_URL);
 
