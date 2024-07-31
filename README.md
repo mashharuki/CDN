@@ -156,14 +156,23 @@ There are 3 update points.
 
 ### Wave7
 
-- ドメインの有効期限が切れているかどうかチェックする機能をフロントエンド側から呼び出せるようにする。
-- relayer からメタトランザクション用のトランザクションを AWS Lambda に外出しする。
+- We have built backend logic on AWS to send transactions for meta-transactions from the relayer.
+
+  Specifically, we are using the following services:
+
+  - API Gateway
+  - AWS Lambda
+  - System Manager Parameters
+
+  This resource is implemented using CDK and is set up to be automatically deployed and deleted.
 
 ### Wave8
 
-- Central Data Hub との更なるコラボレーションのため ERC6551 向けの Indexer コンポーネントを追加開発する。
+- ドメインの有効期限が切れているかどうかチェックする機能をフロントエンド側から呼び出せるようにする。
 
 ### Wave9
+
+- Central Data Hub との更なるコラボレーションのため ERC6551 向けの Indexer コンポーネントを追加開発する。
 
 ### Wave10
 
