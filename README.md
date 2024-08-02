@@ -265,3 +265,6 @@ There are 3 update points.
 6. [daisyui Docs](https://daisyui.com/docs/themes)
 7. [daisyui Next.js Example](https://stackblitz.com/edit/daisyui-nextjs?file=app%2Fpage.jsx)
 8. [GitHub - Central-Data-Hub](https://github.com/cardene777/Central-Data-Hub)
+9. [GitHub - Xenea-Indexer-Template](https://github.com/cardene777/Xenea-Indexer-Template)
+10. [rindexer](https://rindexer.xyz/docs/introduction/installation)
+11. [GitHub - rindexer](https://github.com/joshstevens19/rindexer)
