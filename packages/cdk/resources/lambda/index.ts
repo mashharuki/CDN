@@ -23,6 +23,10 @@ export const handler = async (
   if (result != null) {
     response = {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
       body: JSON.stringify({
         message: "send meta tx success.",
         txHash: result,
@@ -31,6 +35,10 @@ export const handler = async (
   } else {
     response = {
       statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
       body: JSON.stringify({
         message: "send meta tx failed.",
       }),

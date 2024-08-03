@@ -46,6 +46,14 @@ export class RelayerStack extends cdk.Stack {
         requestTemplates: {
           "application/json": '{ "statusCode": "200" }',
         },
+        integrationResponses: [
+          {
+            statusCode: "200",
+            responseParameters: {
+              "method.response.header.Access-Control-Allow-Origin": "'*'",
+            },
+          },
+        ],
       }
     );
 
@@ -63,8 +71,29 @@ export class RelayerStack extends cdk.Stack {
 
     // APIのリソースとメソッドを定義
     const items = api.root.addResource("relayer");
+    // CORSの設定を追加
+    items.addCorsPreflight({
+      allowOrigins: apigateway.Cors.ALL_ORIGINS,
+      allowMethods: ["POST", "OPTIONS"],
+      allowHeaders: [
+        "Content-Type",
+        "X-Amz-Date",
+        "Authorization",
+        "X-Api-Key",
+        "X-Amz-Security-Token",
+      ],
+    });
+
     const postMethod = items.addMethod("POST", postLambdaIntegration, {
       apiKeyRequired: true,
+      methodResponses: [
+        {
+          statusCode: "200",
+          responseParameters: {
+            "method.response.header.Access-Control-Allow-Origin": true,
+          },
+        },
+      ],
     });
 
     // UsagePlanにメソッドを追加

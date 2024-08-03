@@ -29,13 +29,16 @@ export const requestRelayer = async (request: any) => {
   let result;
 
   try {
+    console.log("request:", request);
     // call verify method
-    const verifyResult = await forwarder.verify(request);
+    const verifyResult = await forwarder
+      .connect(relayer)
+      .verify(request.request);
     console.log("verify result: ", verifyResult);
     if (!verifyResult) throw "invalid request data!";
 
     // call execute method from relayer
-    const tx = await forwarder.connect(relayer).execute(request);
+    const tx = await forwarder.connect(relayer).execute(request.request);
     await tx.wait();
 
     console.log("tx.hash:", tx.hash);
