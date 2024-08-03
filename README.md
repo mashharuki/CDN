@@ -265,6 +265,18 @@ There are 3 update points.
   yarn start
   ```
 
+- deploy CDK Stack
+
+  ```bash
+  yarn cdk deploy
+  ```
+
+- destroy CDK Stack
+
+  ```bash
+  yarn cdke destroy '*' --force
+  ```
+
 ### 参考文献
 
 1. [テストネット BlockExplorer](https://testnet.crossvaluescan.com/)
