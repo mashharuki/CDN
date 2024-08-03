@@ -1,6 +1,10 @@
-# 🏗 CrossValueChain Domain Name Service (CDN)
+# 🏗 Xenea Domain Name Service (XDN)
 
 [![Lint & Test Smart Contracts](https://github.com/mashharuki/CDN/actions/workflows/lint.yaml/badge.svg)](https://github.com/mashharuki/CDN/actions/workflows/lint.yaml)
+
+## Slides
+
+[Canva - Xenea Domain Name Service](https://www.canva.com/design/DAGEW_aT7tA/wpL6iocpw24o8T9BsPkV6Q/view?utm_content=DAGEW_aT7tA&utm_campaign=designshare&utm_medium=link&utm_source=editor)
 
 ## What it does
 
@@ -165,6 +169,12 @@ There are 3 update points.
   - System Manager Parameters
 
   This resource is implemented using CDK and is set up to be automatically deployed and deleted.
+
+- We have added settings for the XDN contract to the indexer for Xenea that Cardene has been developing.
+
+  We plan to continue updating it in the upcoming Wave as well.
+
+  [update points](https://github.com/cardene777/Xenea-Indexer-Template/pull/1)
 
 ### Wave8
 
