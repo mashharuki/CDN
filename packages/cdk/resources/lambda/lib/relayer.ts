@@ -40,6 +40,7 @@ export const requestRelayer = async (request: any) => {
     // call execute method from relayer
     const tx = await forwarder.connect(relayer).execute(request.request, {
       value: request.request.value,
+      gasLimit: 9000000,
     });
     await tx.wait();
 
