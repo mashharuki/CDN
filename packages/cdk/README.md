@@ -19,6 +19,12 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
   yarn cdk bootstrap
   ```
 
+- docker image をプルしてくる。
+
+  ```bash
+  aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+  ```
+
 - CDK スタックデプロイ
 
   ```bash

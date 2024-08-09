@@ -1,7 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { Contract, ethers } from "ethers";
 import { toast } from "react-toastify";
 import { useWriteContract } from "wagmi";
+import { POST } from "~~/app/api/requestRelayer/route";
+import { useDeployedContractInfo, useEthersSigner } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
+import { RPC_URL } from "~~/utils/constants";
+import { getUint48 } from "~~/utils/helper";
+import { ContractName } from "~~/utils/scaffold-eth/contract";
+import { getAllContracts } from "~~/utils/scaffold-eth/contractsData";
+import { ForwardRequest } from "~~/utils/types";
 
 export type ModalProps = {
   open: boolean;
@@ -17,16 +25,85 @@ export type ModalProps = {
  * @returns
  */
 const Modal = (props: ModalProps) => {
+  const contractsData = getAllContracts();
+  const contractNames = Object.keys(contractsData) as ContractName[];
   const [newRecord, setNewRecord] = useState("");
 
-  const { writeContractAsync } = useWriteContract();
+  const {} = useWriteContract();
   const { targetNetwork } = useTargetNetwork();
+
+  const { data: SampleForwarderContractData } = useDeployedContractInfo(contractNames[2]);
+
+  // get signer object
+  const signer = useEthersSigner({ chainId: targetNetwork.id });
 
   /**
    * setRecord
    */
   const setRecord = async () => {
     try {
+      // create Contract object
+      const domains: any = new Contract(
+        props.deployedContractData.address,
+        props.deployedContractData.abi,
+        signer,
+      ) as any;
+      const forwarder: any = new Contract(
+        SampleForwarderContractData.address,
+        SampleForwarderContractData.abi,
+        signer,
+      ) as any;
+      // generate encoded data
+      const data = domains.interface.encodeFunctionData("setRecord", [newRecord]);
+      // get EIP712 domain
+      const eip721Domain = await forwarder.eip712Domain();
+      const provider = new ethers.JsonRpcProvider(RPC_URL);
+      // get current block
+      const currentBlock = await provider.getBlock("latest");
+      const currentTime = currentBlock!.timestamp;
+      // get deadline
+      const uint48Time = await getUint48(currentTime);
+      console.log("getUint48:", uint48Time);
+
+      // creat metaTx request data
+      const signature = await signer!.signTypedData(
+        {
+          name: eip721Domain.name,
+          version: eip721Domain.version,
+          chainId: eip721Domain.chainId,
+          verifyingContract: eip721Domain.verifyingContract,
+        },
+        {
+          ForwardRequest: ForwardRequest,
+        },
+        {
+          from: signer?.address,
+          to: domains.target,
+          value: 0,
+          gas: 900000n,
+          nonce: await forwarder.nonces(signer?.address),
+          deadline: uint48Time,
+          data: data,
+        },
+      );
+
+      console.log("signature:", signature);
+
+      // call execute method from relayer
+      await POST({
+        request: {
+          from: signer?.address,
+          to: domains.target,
+          value: 0,
+          gas: 900000,
+          // nonce: await forwarder.nonces(address),
+          deadline: uint48Time.toString(),
+          data: data,
+          signature: signature,
+        },
+      });
+
+      /*
       // register domain
       await writeContractAsync({
         address: props.deployedContractData.address,
@@ -35,6 +112,7 @@ const Modal = (props: ModalProps) => {
         args: [props.domain as any, newRecord],
         chainId: targetNetwork.id,
       });
+      */
       toast.success("🦄 Success!", {
         position: "top-right",
         autoClose: 5000,
