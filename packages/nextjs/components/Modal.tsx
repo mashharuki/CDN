@@ -54,7 +54,7 @@ const Modal = (props: ModalProps) => {
         signer,
       ) as any;
       // generate encoded data
-      const data = domains.interface.encodeFunctionData("setRecord", [newRecord]);
+      const data = domains.interface.encodeFunctionData("setRecord", [props.domain, newRecord]);
       // get EIP712 domain
       const eip721Domain = await forwarder.eip712Domain();
       const provider = new ethers.JsonRpcProvider(RPC_URL);
@@ -80,7 +80,7 @@ const Modal = (props: ModalProps) => {
           from: signer?.address,
           to: domains.target,
           value: 0,
-          gas: 900000n,
+          gas: 90000000,
           nonce: await forwarder.nonces(signer?.address),
           deadline: uint48Time,
           data: data,
@@ -95,7 +95,7 @@ const Modal = (props: ModalProps) => {
           from: signer?.address,
           to: domains.target,
           value: 0,
-          gas: 900000,
+          gas: 90000000,
           // nonce: await forwarder.nonces(address),
           deadline: uint48Time.toString(),
           data: data,
