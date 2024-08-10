@@ -28,7 +28,7 @@ export class RelayerStack extends cdk.Stack {
       bundling: {
         forceDockerBundling: true,
       },
-      timeout: cdk.Duration.seconds(30),
+      timeout: cdk.Duration.seconds(600),
       environment: {
         RELAYER_PRIVATE_KEY: RELAYER_PRIVATE_KEY,
       },

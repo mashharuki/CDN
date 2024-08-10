@@ -25,6 +25,7 @@ export const handler = async (
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type",
       },
       body: JSON.stringify({
@@ -37,6 +38,7 @@ export const handler = async (
       statusCode: 500,
       headers: {
         "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type",
       },
       body: JSON.stringify({
@@ -44,6 +46,8 @@ export const handler = async (
       }),
     };
   }
+
+  console.log("response:", response);
 
   return response;
 };

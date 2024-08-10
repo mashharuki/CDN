@@ -28,9 +28,10 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
   const [price, setPrice] = useState<any>();
   const [isAvailable, setIsAvailable] = useState<boolean>(false);
   const [years, setYears] = useState(1);
+  const [txHash, setTxHash] = useState<string | undefined>(undefined);
+
   const { targetNetwork } = useTargetNetwork();
   const { address } = useAccount();
-
   const { isPending } = useWriteContract();
   // get signer object
   const signer = useEthersSigner({ chainId: targetNetwork.id });
@@ -64,6 +65,7 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
     console.log("data:", data);
     if (data) {
       setIsAvailable(true);
+      updatePrice();
       toast.info(`This domain is available`, {
         position: "top-right",
         autoClose: 5000,
@@ -131,7 +133,7 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
           from: address,
           to: domains.target,
           value: price.toString(),
-          gas: 900000n,
+          gas: 9000000,
           nonce: await forwarder.nonces(address),
           deadline: uint48Time,
           data: data,
@@ -146,14 +148,17 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
           from: address,
           to: domains.target,
           value: price.toString(),
-          gas: 900000,
+          gas: 9000000,
           //nonce: await forwarder.nonces(address),
           deadline: uint48Time.toString(),
           data: data,
           signature: signature,
         },
-      }).then(async () => {
-        // console.log("gasless result:", await result.json());
+      }).then(async result => {
+        // APIリクエストのリザルトをJSONとして解析
+        console.log("API response:", result);
+        setTxHash(result.body.txHash);
+
         toast.success("🦄 Success!", {
           position: "top-right",
           autoClose: 5000,
@@ -198,12 +203,16 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
     }
   };
 
+  /**
+   * updatePrice method
+   */
+  const updatePrice = async () => {
+    await getPrice();
+    console.log("price:", domainPrice);
+    setPrice(domainPrice);
+  };
+
   useEffect(() => {
-    const updatePrice = async () => {
-      await getPrice();
-      console.log("price:", domainPrice);
-      setPrice(domainPrice);
-    };
     updatePrice();
   }, [years]);
 
@@ -260,6 +269,15 @@ export const ServiceCard = ({ deployedContractData, SampleForwarderContractData 
                         </button>
                       </div>
                     </>
+                  )}
+                  {txHash != undefined && (
+                    <div className="mt-6">
+                      <a target="_blank" href={`${targetNetwork.blockExplorers?.default.url}/tx/${txHash}`}>
+                        <button className="flex items-center justify-center w-full px-10 py-4 text-base font-medium text-center text-white transition duration-400 ease-in-out transform bg-green-600 rounded-xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                          Check Tx Data
+                        </button>
+                      </a>
+                    </div>
                   )}
                 </div>
               </div>

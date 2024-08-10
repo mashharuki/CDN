@@ -79,8 +79,8 @@ const Modal = (props: ModalProps) => {
         {
           from: signer?.address,
           to: domains.target,
-          value: 0,
-          gas: 90000000,
+          value: (0).toString(),
+          gas: 9000000,
           nonce: await forwarder.nonces(signer?.address),
           deadline: uint48Time,
           data: data,
@@ -94,9 +94,9 @@ const Modal = (props: ModalProps) => {
         request: {
           from: signer?.address,
           to: domains.target,
-          value: 0,
-          gas: 90000000,
-          // nonce: await forwarder.nonces(address),
+          value: (0).toString(),
+          gas: 9000000,
+          //nonce: (await forwarder.nonces(signer?.address)).toString(),
           deadline: uint48Time.toString(),
           data: data,
           signature: signature,

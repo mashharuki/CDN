@@ -27,6 +27,8 @@ export async function POST(requestData: any) {
     }),
   });
 
+  console.log("response:", response);
+
   if (!response.ok) {
     throw new Error(`Error: ${response.status}`);
   }
@@ -35,7 +37,8 @@ export async function POST(requestData: any) {
 
   console.log("responseData:", data);
 
-  return new Response(data, {
+  return {
     status: 200,
-  });
+    body: data,
+  };
 }
