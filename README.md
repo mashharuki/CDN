@@ -178,25 +178,35 @@ There are 3 update points.
 
 ### Wave8
 
-- Indexer に`NFTMarketPlace`コントラクトの設定を追加
+- We added the NFTMarketPlace contract configuration to the Indexer.
 
   [https://github.com/cardene777/Xenea-Indexer-Template/pull/2](https://github.com/cardene777/Xenea-Indexer-Template/pull/2)
 
-- レコードを更新する部分もメタトランザクションを適用しました。
+- We fixed a bug on the API side that occurred when minting an NFT.
 
-- NFT をミントする時に API 側にバグがあったので修正しました。
+  [Update Points](https://github.com/mashharuki/CDN/blob/main/packages/cdk/resources/lambda/lib/relayer.ts#L41-L53)
 
-- 最初にドメインの有効を確認する時に price が自動計算されないバグがあったので修正しました。
+- We fixed a bug where the price was not automatically calculated when initially checking the domain's validity.
 
-- ドメイン発行後にすぐにブロックエクスプローラーに遷移できるようにしました。
+  [Update Points](https://github.com/mashharuki/CDN/blob/main/packages/nextjs/app/cdn/_components/ServiceCard.tsx#L68)
 
-- ドメインの有効期限が切れているかどうかチェックする機能をフロントエンド側から呼び出せるようにする。
+- We made it so you can immediately navigate to the block explorer after a domain is issued.
+
+  [Update Points](https://github.com/mashharuki/CDN/blob/main/packages/nextjs/app/cdn/_components/ServiceCard.tsx#L273-L281)
+
+- We enabled the front-end to call a function to check if a domain's expiration date has passed.
+
+  [Update Points](https://github.com/mashharuki/CDN/blob/main/packages/nextjs/app/domains/_components/DomainCard.tsx#L148-L184)
 
 ### Wave9
 
 - Central Data Hub との更なるコラボレーションのため ERC6551 向けの Indexer コンポーネントを追加開発する。
+- We will further develop the Indexer component for ERC6551 to enhance collaboration with the Central Data Hub.
 
 ### Wave10
+
+- ドメイン登録時以外にもガスレスロジックを追加するようにする。
+- We Will implement gasless logic not only during domain registration but also in other processes.
 
 ## What's next for future Wave
 
