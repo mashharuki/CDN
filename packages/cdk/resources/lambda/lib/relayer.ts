@@ -36,12 +36,6 @@ export const requestRelayer = async (request: any) => {
       .verify(request.request);
     console.log("verify result: ", verifyResult);
     if (!verifyResult) throw "invalid request data!";
-    /*
-    // estimate gas
-    const estimateGas = await forwarder.execute.estimateGas(request.request);
-
-    console.log("estimateGas:", estimateGas.toString());
-    */
 
     // call execute method from relayer
     const tx = await forwarder.connect(relayer).execute(request.request, {

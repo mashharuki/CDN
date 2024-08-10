@@ -40,5 +40,5 @@ export async function POST(requestData: any) {
   return {
     status: 200,
     body: data,
-  };
+  } as any;
 }
