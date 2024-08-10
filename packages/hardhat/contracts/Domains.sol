@@ -288,7 +288,7 @@ contract Domains is ERC721URIStorage, ERC2771Context {
   /**
    * 有効期限をチェックして、期限切れのドメインをburnするメソッド
    */
-  function checkExpiration(uint256 tokenId) public {
+  function checkExpiration(uint256 tokenId) public returns (bool) {
     // 有効期限を過ぎていた場合はburnする。
     if (block.timestamp > expirationDates[tokenId]) {
       // NFTマーケットプレイスにdetachする。
@@ -299,6 +299,9 @@ contract Domains is ERC721URIStorage, ERC2771Context {
       delete expirationDates[tokenId];
 
       emit DomainExpired(tokenId);
+      return true;
+    } else {
+      return false;
     }
   }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { PencilIcon } from "@heroicons/react/24/outline";
@@ -28,7 +29,7 @@ export const DomainCard = (porps: DomainCardPorps) => {
   const [isMintCDHOpen, setIsMintCDHOpen] = useState(false);
   const [expirationDate, setExpirationDate] = useState("");
 
-  const {} = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
   const { targetNetwork } = useTargetNetwork();
   const { address } = useAccount();
 
@@ -144,6 +145,44 @@ export const DomainCard = (porps: DomainCardPorps) => {
   };
   */
 
+  /**
+   * checkExpirationDate
+   */
+  const checkExpirationDate = async () => {
+    try {
+      // call checkExpiration
+      const result = await writeContractAsync({
+        address: porps.deployedContractData.address,
+        functionName: "checkExpiration",
+        abi: porps.deployedContractData.abi,
+        args: [porps.id],
+      });
+      console.log("result:", result);
+      toast.success("🦄 Success!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } catch (err: any) {
+      console.error("err:", err);
+      toast.error("Failed....", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
+
   useEffect(() => {
     const init = async () => {
       await getRecord();
@@ -244,16 +283,6 @@ export const DomainCard = (porps: DomainCardPorps) => {
                   >
                     <PencilIcon className="h-5 w-5" />
                   </button>
-                  {/*
-                  <div>
-                    <button
-                      onClick={listItem}
-                      className="bottom-4 right-3 bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors"
-                    >
-                      <ShoppingCartIcon className="h-5 w-5" />
-                    </button>
-                  </div>
-                  */}
                 </div>
               </div>
             ) : (
@@ -313,6 +342,14 @@ export const DomainCard = (porps: DomainCardPorps) => {
               <p>
                 <strong>expirationDate: {expirationDate}</strong>
               </p>
+              <div className="mt-2">
+                <button
+                  onClick={checkExpirationDate}
+                  className="bg-white text-blue-500 rounded-full p-2 shadow-lg hover:bg-gray-200 transition-colors"
+                >
+                  check expire status
+                </button>
+              </div>
             </div>
             {owner == address && (
               <>
