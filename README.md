@@ -180,6 +180,8 @@ There are 3 update points.
 
 - Indexer に`NFTMarketPlace`コントラクトの設定を追加
 
+  [https://github.com/cardene777/Xenea-Indexer-Template/pull/2](https://github.com/cardene777/Xenea-Indexer-Template/pull/2)
+
 - レコードを更新する部分もメタトランザクションを適用しました。
 
 - NFT をミントする時に API 側にバグがあったので修正しました。
