@@ -18,12 +18,12 @@ const additionalWallets = [
   intmaxwalletsdk({
     wallet: {
       url: "https://intmaxwallet-sdk-wallet.vercel.app/",
-      name: "IntmaxWalletSDK Demo",
+      name: "IntmaxWallet",
       iconUrl: "https://intmaxwallet-sdk-wallet.vercel.app/vite.svg",
     },
     metadata: {
-      name: "Rainbow-Kit Demo",
-      description: "Rainbow-Kit Demo",
+      name: "Xenea DomainNameService",
+      description: "Xenea DomainNameService",
       icons: ["https://intmaxwallet-sdk-wallet.vercel.app/vite.svg"],
     },
   }),
@@ -31,12 +31,12 @@ const additionalWallets = [
     mode: "iframe",
     wallet: {
       url: "https://intmaxwallet-sdk-wallet.vercel.app/",
-      name: "IntmaxWalletSDK Demo",
+      name: "IntmaxWallet",
       iconUrl: "https://intmaxwallet-sdk-wallet.vercel.app/vite.svg",
     },
     metadata: {
-      name: "Rainbow-Kit Demo",
-      description: "Rainbow-Kit Demo",
+      name: "Xenea DomainNameService",
+      description: "Xenea DomainNameService",
       icons: ["https://intmaxwallet-sdk-wallet.vercel.app/vite.svg"],
     },
   }),
@@ -47,8 +47,8 @@ const additionalWallets = [
       iconUrl: "https://wallet.intmax.io/favicon.ico",
     },
     metadata: {
-      name: "Rainbow-Kit Demo",
-      description: "Rainbow-Kit Demo",
+      name: "Xenea DomainNameService",
+      description: "Xenea DomainNameService",
       icons: ["https://intmaxwallet-sdk-wallet.vercel.app/vite.svg"],
     },
   }),
