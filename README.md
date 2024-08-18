@@ -213,6 +213,8 @@ There are 3 update points.
 - Central Data Hub との更なるコラボレーションのため ERC6551 向けの Indexer コンポーネントを追加開発する。
 - We will further develop the Indexer component for ERC6551 to enhance collaboration with the Central Data Hub.
 
+- INTMAX Wallet SDK を統合しました。
+
 ### Wave10
 
 - ドメイン登録時以外にもガスレスロジックを追加するようにする。
