@@ -2,7 +2,11 @@
 
 [![Lint & Test Smart Contracts](https://github.com/mashharuki/CDN/actions/workflows/lint.yaml/badge.svg)](https://github.com/mashharuki/CDN/actions/workflows/lint.yaml)
 
-## Slides
+## WaveHack Global WebX DemoDay Pitch Slide
+
+[Canva - WaveHack Global WebX DemoDay Pitch Slide](https://www.canva.com/design/DAGOKu_d4FI/itwaypRN70PJ0FRgfbaA6A/view?utm_content=DAGOKu_d4FI&utm_campaign=designshare&utm_medium=link&utm_source=editor)
+
+## Slide
 
 [Canva - Xenea Domain Name Service](https://www.canva.com/design/DAGEW_aT7tA/wpL6iocpw24o8T9BsPkV6Q/view?utm_content=DAGEW_aT7tA&utm_campaign=designshare&utm_medium=link&utm_source=editor)
 
@@ -11,6 +15,12 @@
 The CrossValueChain Domain Name Service simplifies the ethereal address, which is a long string of alphanumeric characters starting with "0x," to make it easier to remember and simpler to use as a string of characters(like ENS).
 
 The CrossValueChain Domain is minted as NFT(ERC721).
+
+## Product Overview
+
+![](./docs/overview.png)
+
+![](./docs/overview2.png)
 
 ## Technologies I used
 
