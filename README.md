@@ -210,10 +210,11 @@ There are 3 update points.
 
 ### Wave9
 
-- Central Data Hub との更なるコラボレーションのため ERC6551 向けの Indexer コンポーネントを追加開発する。
-- We will further develop the Indexer component for ERC6551 to enhance collaboration with the Central Data Hub.
+- Central Data Hub との更なるコラボレーションのため ERC6551 向けの Indexer コンポーネントを追加開発しました。
+- We developed the Indexer component for ERC6551 to enhance collaboration with the Central Data Hub.
 
-- INTMAX Wallet SDK を統合しました。
+- INTMAX Wallet SDK の機能を導入し新規ユーザーのオンボーディングをさらに簡単にしました。
+- We integraded the features of the INTMAX Wallet SDK to make onboarding new users even easier.
 
 ### Wave10
 
